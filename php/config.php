@@ -30,3 +30,17 @@ function cerrarConexion($conexion) {
         $conexion->close();
     }
 }
+
+// Respuesta JSON estándar (la usan los endpoints de clientes)
+function responder($datos, $ok, $mensaje, $conexion = null) {
+    header("Content-Type: application/json; charset=utf-8");
+
+    cerrarConexion($conexion);
+
+    echo json_encode([
+        "datos" => $datos,
+        "ok" => $ok,
+        "mensaje" => $mensaje
+    ]);
+    exit;
+}

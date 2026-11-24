@@ -18,3 +18,41 @@ body { background: #f4f7fc; }
    No se usan las clases text-bg-warning / text-bg-info de Bootstrap porque fuerzan letra oscura. */
 .badge-manana { background: var(--bs-warning); color: #fff; }
 .badge-tarde { background: var(--bs-info); color: #fff; }
+
+/* Notificaciones (toast) arriba a la derecha, con el logo del taller.
+   Cabecera azul como la barra de navegación; el borde lateral indica si ha ido bien o mal. */
+.toast-taller-contenedor { z-index: 1100; margin-top: 5.5rem; }
+.toast-taller {
+  width: min(24rem, calc(100vw - 2rem));
+  border: 0;
+  border-left: 6px solid var(--bs-success);
+  border-radius: .75rem;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 .75rem 1.5rem rgba(15, 58, 121, .25);
+}
+.toast-taller.toast-exito { border-left-color: #198754; }
+.toast-taller.toast-error { border-left-color: #dc3545; }
+.toast-taller-cabecera {
+  background: var(--bs-primary);
+  color: #fff;
+  border-bottom: 3px solid var(--bs-secondary);
+}
+.toast-taller-logo { height: 28px; width: auto; border-radius: .4rem; }
+.toast-taller-icono { line-height: 1; }
+.toast-exito .toast-taller-icono { color: #198754; }
+.toast-error .toast-taller-icono { color: #dc3545; }
+.toast-taller .toast-body { font-size: .95rem; color: #212529; }
+
+
+/* Responsive de las notificaciones */
+/* Móvil (xs): ocupan casi todo el ancho y quedan centradas, bajo la barra */
+@media (max-width: 575.98px) {
+  .toast-taller-contenedor { left: 0; right: 0; margin-top: 5rem; padding: .75rem !important; }
+  .toast-taller { width: 100%; margin: 0 auto; }
+  .toast-taller .toast-body { font-size: .9rem; }
+}
+/* Tablet (md) y escritorio (lg): arriba a la derecha, un poco más grandes en escritorio */
+@media (min-width: 992px) {
+  .toast-taller { width: 26rem; }
+}

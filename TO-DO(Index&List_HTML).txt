@@ -1,8 +1,0 @@
-- Un sólo index.HTML (ojo con el css para que las letras de las labels manana/tarde salgan en white)
-- Un listado_[...].HTML
-- Una vez hechos los html's y que funcionen, BORRAR:
-	- cabecera.html
-	- index.php
-	- pie.html
-- Actualizar README (el que hay está copiado del de la tarea de HLC)
-- IMPORTANTE: config.php para la conexión con la DB está ahora en ./backend/config.php
