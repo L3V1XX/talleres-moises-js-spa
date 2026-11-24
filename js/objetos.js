@@ -335,3 +335,120 @@ class Empresa {
         return respuesta;
     }
 }
+
+
+class Cliente {
+    #id;
+    #nombre_completo;
+    #telefono;
+    #email;
+    #id_cp;
+
+    constructor(id, nombre_completo, telefono, email, id_cp) {
+        this.#id = id;
+        this.#nombre_completo = nombre_completo;
+        this.#telefono = telefono;
+        this.#email = email;
+        this.#id_cp = id_cp;
+    }
+
+    get id() {
+        return this.#id;
+    }
+
+    get nombre_completo() {
+        return this.#nombre_completo;
+    }
+
+    get telefono() {
+        return this.#telefono;
+    }
+
+    get email() {
+        return this.#email;
+    }
+
+    get id_cp() {
+        return this.#id_cp;
+    }
+
+    set id(value) {
+        this.#id = value;
+    }
+
+    set nombre_completo(value) {
+        this.#nombre_completo = value;
+    }
+
+    set telefono(value) {
+        this.#telefono = value;
+    }
+
+    set email(value) {
+        this.#email = value;
+    }
+
+    set id_cp(value) {
+        this.#id_cp = value;
+    }
+
+    toJSON() {
+        return {
+            id: this.#id,
+            nombre_completo: this.#nombre_completo,
+            telefono: this.#telefono,
+            email: this.#email,
+            id_cp: this.#id_cp,
+        };
+    }
+}
+
+class GestionClientes {
+    async crearCliente(oCliente) {
+        let datos = new FormData();
+
+        datos.append("cliente", JSON.stringify(oCliente));
+
+        let respuesta = await peticionPOST("alta_cliente.php", datos);
+
+        return respuesta;
+    }
+
+    async getCliente() {
+        return await peticionGET("get_clientes.php", new FormData());
+    }
+
+    async getClientesNombres(nombre) {
+        let datos = new FormData();
+
+        datos.append("nombre", nombre);
+
+        let respuesta = await peticionGET("get_clientes_por_nombre.php", datos);
+
+        return respuesta;
+    }
+
+    async getCodigosPostales() {
+        return await peticionGET("get_codigos_postales.php");
+    }
+
+    async buscarCliente(id) {
+        let datos = new FormData();
+
+        datos.append("id", id);
+
+        let respuesta = await peticionGET("buscar_cliente.php", datos);
+
+        return respuesta;
+    }
+
+    async borrarCliente(id) {
+        let datos = new FormData();
+
+        datos.append("id", id);
+
+        let respuesta = await peticionPOST("borrar_cliente.php", datos);
+
+        return respuesta;
+    }
+}

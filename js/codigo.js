@@ -2,7 +2,8 @@
 
 var oEmpresa = new Empresa();
 
-// >>> CLIENTES (Javier): variables globales aquí
+var oGestionClientes = new GestionClientes();
+var idClientePendienteBorrar = null;
 
 // >>> COCHES
 var idCochePendienteBorrar = null;
@@ -26,7 +27,25 @@ function registrarEventos() {
     .querySelector("#contenidoInicio")
     .addEventListener("click", procesarClickInicio);
 
-  // >>> CLIENTES (Javier): eventos del menú (#mnu...Cliente) y de sus formularios/botones aquí
+  document
+    .querySelector("#mnuAltaCliente")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuBuscarCliente")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuListarCliente")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuFiltrarCliente")
+    .addEventListener("click", mostrarFormulario);
+
+  frmAltaCliente.addEventListener("submit", procesarAltaCliente);
+  frmBuscarCliente.addEventListener("submit", procesarBuscarClientes);
+  frmFiltroClientes.addEventListener("submit", procesarFiltrarClientes);
+  frmFiltroClientes.addEventListener("reset", () => {
+    document.querySelector("#resultadosClientes").innerHTML = "";
+  });
 
   // >>> COCHES
   document
@@ -116,7 +135,22 @@ function mostrarFormulario(oEvento) {
   ocultarFormularios();
 
   switch (opcionMenu) {
-    // >>> CLIENTES (Javier): cases mnuAltaCliente, mnuBuscarCliente, mnuListarCliente, mnuFiltrarCliente
+    case "mnuAltaCliente":
+      frmAltaCliente.reset();
+      vistaAltaCliente.classList.remove("d-none");
+      actualizarDesplegableCodigosPostales();
+      break;
+    case "mnuBuscarCliente":
+      vistaBuscarCliente.classList.remove("d-none");
+      break;
+    case "mnuListarCliente":
+      vistaListarCliente.classList.remove("d-none");
+      procesarListadoClientes();
+      break;
+    case "mnuFiltrarCliente":
+      vistaFiltrarCliente.classList.remove("d-none");
+      actualizarDesplegableCodigosPostales();
+      break;
 
     // >>> COCHES
     case "mnuAltaCoche":
@@ -162,7 +196,11 @@ function mostrarFormulario(oEvento) {
 function ocultarFormularios() {
   vistaInicio.classList.add("d-none");
 
-  // >>> CLIENTES (Javier): ocultar tus vistas y vaciar #resultadosClientes
+  vistaAltaCliente.classList.add("d-none");
+  vistaBuscarCliente.classList.add("d-none");
+  vistaListarCliente.classList.add("d-none");
+  vistaFiltrarCliente.classList.add("d-none");
+  document.querySelector("#resultadosClientes").innerHTML = "";
 
   // >>> COCHES
   vistaAltaCoche.classList.add("d-none");
@@ -310,6 +348,9 @@ function procesarClickInicio(oEvento) {
 // El mismo botón del modal sirve para confirmar el borrado de cualquier entidad.
 // Cada compañero añade aquí su "if (idXxxPendienteBorrar) return ejecutarBorradoXxx();"
 function ejecutarBorrado() {
+  if (idClientePendienteBorrar) {
+    return ejecutarBorradoCliente();
+  }
   if (idCochePendienteBorrar) {
     return ejecutarBorradoCoche();
   }
@@ -341,12 +382,206 @@ function mostrarToast(mensaje, esExito = true) {
 }
 
 // =============================================================================
-// >>> CLIENTES (Javier): TUS FUNCIONES VAN AQUÍ
-//     Sugerido: pintarTablaClientes, procesarListadoClientes, procesarBuscarClientes,
-//     procesarFiltrarClientes, ejecutarBorradoCliente, procesarGuardarCliente...
-//     Además, tu desplegable de clientes debe exponer oEmpresa.getClientes()
-//     porque el formulario de COCHES lo usa para elegir el dueño del coche.
+// >>> CLIENTES (Javier)
 // =============================================================================
+
+// Rellena los desplegables de código postal (alta y filtro de clientes)
+async function actualizarDesplegableCodigosPostales() {
+  let respuesta = await oGestionClientes.getCodigosPostales();
+
+  let optionsAlta = "<option value=''>-- Seleccione código postal --</option>";
+  let optionsFiltro =
+    "<option value=''>-- Todos los códigos postales --</option>";
+
+  if (respuesta.ok && Array.isArray(respuesta.datos)) {
+    for (let cp of respuesta.datos) {
+      let opcion =
+        "<option value='" +
+        cp.id +
+        "'>" +
+        esc(cp.codigo + " - " + cp.municipio) +
+        "</option>";
+      optionsAlta += opcion;
+      optionsFiltro += opcion;
+    }
+  } else {
+    mostrarToast(respuesta.mensaje, false);
+  }
+
+  // Se conserva lo elegido si ya había una selección
+  let altaActual = frmAltaCliente.lstCodigoPostal.value;
+  let filtroActual = frmFiltroClientes.lstCpFiltro.value;
+  frmAltaCliente.lstCodigoPostal.innerHTML = optionsAlta;
+  frmFiltroClientes.lstCpFiltro.innerHTML = optionsFiltro;
+  frmAltaCliente.lstCodigoPostal.value = altaActual;
+  frmFiltroClientes.lstCpFiltro.value = filtroActual;
+}
+
+async function procesarAltaCliente(oEvento) {
+  oEvento.preventDefault();
+
+  let nombre_completo = frmAltaCliente.txtNombreCliente.value.trim();
+  let telefono = frmAltaCliente.txtTelefonoCliente.value.trim();
+  let email = frmAltaCliente.txtEmailCliente.value.trim();
+  let id_cp = frmAltaCliente.lstCodigoPostal.value;
+
+  let respuesta = await oGestionClientes.crearCliente(
+    new Cliente(null, nombre_completo, telefono, email, id_cp),
+  );
+
+  mostrarToast(respuesta.mensaje, respuesta.ok);
+
+  if (respuesta.ok) {
+    frmAltaCliente.reset();
+  }
+}
+
+// HTML de una tabla de clientes
+function pintarTablaClientes(datos, mensajeVacio, mostrarTotal) {
+  let cont = document.querySelector("#resultadosClientes");
+
+  if (datos.length === 0) {
+    cont.innerHTML =
+      "<div class='alert alert-info'>" + mensajeVacio + "</div>";
+    return;
+  }
+
+  let html = "";
+  if (mostrarTotal) {
+    html +=
+      "<p class='text-muted'>" + datos.length + " cliente(s) encontrado(s)</p>";
+  }
+
+  html +=
+    "<div class='table-responsive'><table class='table table-striped table-hover align-middle' id='tablaListadoClientes'>" +
+    "<thead><tr>" +
+    "<th>Nombre</th><th>Email</th><th>Teléfono</th><th>Código postal</th><th>Acciones</th>" +
+    "</tr></thead><tbody>";
+
+  for (let fila of datos) {
+    html +=
+      "<tr>" +
+      "<td class='fw-semibold'>" +
+      esc(fila.nombre_completo) +
+      "</td>" +
+      "<td>" +
+      esc(fila.email) +
+      "</td>" +
+      "<td>" +
+      esc(fila.telefono ?? "") +
+      "</td>" +
+      "<td>" +
+      esc(String(fila.id_cp ?? "")) +
+      "</td>" +
+      "<td class='text-nowrap'>" +
+      "<button type='button' class='btn btn-sm btn-outline-danger btn-eliminar-cliente' data-id='" +
+      fila.id +
+      "' data-nombre='" +
+      esc(fila.nombre_completo) +
+      "' title='Borrar'><i class='bi bi-trash'></i></button>" +
+      "</td></tr>";
+  }
+
+  html += "</tbody></table></div>";
+  cont.innerHTML = html;
+
+  cont
+    .querySelector("#tablaListadoClientes")
+    .addEventListener("click", procesarAccionTablaClientes);
+}
+
+async function procesarListadoClientes() {
+  let respuesta = await oGestionClientes.getCliente();
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosClientes").innerHTML =
+      "<div class='alert alert-warning'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  pintarTablaClientes(respuesta.datos, "No hay clientes registrados.", false);
+}
+
+async function procesarBuscarClientes(oEvento) {
+  oEvento.preventDefault();
+
+  let texto = frmBuscarCliente.txtBuscarCliente.value.trim();
+  // get_clientes_por_nombre.php usa LIKE tal cual, así que se añaden los comodines aquí
+  let respuesta = await oGestionClientes.getClientesNombres("%" + texto + "%");
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosClientes").innerHTML =
+      "<div class='alert alert-warning'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  pintarTablaClientes(respuesta.datos, "No se han encontrado clientes.", true);
+}
+
+async function procesarFiltrarClientes(oEvento) {
+  oEvento.preventDefault();
+
+  let respuesta = await oGestionClientes.getCliente();
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosClientes").innerHTML =
+      "<div class='alert alert-warning'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  let nombre = frmFiltroClientes.txtNombreFiltro.value.trim().toLowerCase();
+  let email = frmFiltroClientes.txtEmailFiltro.value.trim().toLowerCase();
+  let idCp = frmFiltroClientes.lstCpFiltro.value;
+
+  let filtrados = respuesta.datos.filter(
+    (c) =>
+      c.nombre_completo.toLowerCase().includes(nombre) &&
+      c.email.toLowerCase().includes(email) &&
+      (idCp === "" || c.id_cp == idCp),
+  );
+
+  pintarTablaClientes(
+    filtrados,
+    "No hay clientes que cumplan los filtros.",
+    true,
+  );
+}
+
+function procesarAccionTablaClientes(oEvento) {
+  let btnEliminar = oEvento.target.closest(".btn-eliminar-cliente");
+
+  if (btnEliminar) {
+    idClientePendienteBorrar = btnEliminar.dataset.id;
+
+    document.querySelector("#mensajeModalBorrar").textContent =
+      "¿Seguro que quieres borrar al cliente " +
+      btnEliminar.dataset.nombre +
+      "?";
+    bootstrap.Modal.getOrCreateInstance(
+      document.querySelector("#modalConfirmarBorrar"),
+    ).show();
+  }
+}
+
+async function ejecutarBorradoCliente() {
+  if (!idClientePendienteBorrar) return;
+
+  bootstrap.Modal.getOrCreateInstance(
+    document.querySelector("#modalConfirmarBorrar"),
+  ).hide();
+
+  let respuesta = await oGestionClientes.borrarCliente(idClientePendienteBorrar);
+  idClientePendienteBorrar = null;
+
+  mostrarToast(respuesta.mensaje, respuesta.ok);
+
+  if (respuesta.ok) {
+    ocultarFormularios();
+    vistaListarCliente.classList.remove("d-none");
+    procesarListadoClientes();
+  }
+}
+
 
 // =============================================================================
 // >>> COCHES (Jose Manuel)

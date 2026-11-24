@@ -1,30 +1,23 @@
 <?php
-// Clientes activos para rellenar los desplegables (borrado lógico: deleted_at IS NULL)
-header('Content-Type: application/json; charset=utf-8');
-require_once("config.php");
+require_once ('config.php');
 
 try {
     $conexion = obtenerConexion();
 
-    $resultado = $conexion->query("SELECT id, nombre_completo FROM CLIENTE WHERE deleted_at IS NULL ORDER BY nombre_completo");
+    $sql = "SELECT * FROM CLIENTE;";
+    $resultado = $conexion->query($sql);
 
     $datos = [];
     while ($fila = $resultado->fetch_assoc()) {
         $datos[] = $fila;
     }
 
-    cerrarConexion($conexion);
+    responder($datos, true, "Datos recuperados correctamente", $conexion);
 
-    echo json_encode([
-        "ok" => true,
-        "mensaje" => "Clientes recuperados correctamente",
-        "datos" => $datos
-    ]);
+} catch (mysqli_sql_exception $e) {
+
+    responder(null, false, "Error en la base de datos: " . $e->getMessage(), $conexion ?? null);
 } catch (Exception $e) {
-    echo json_encode([
-        "ok" => false,
-        "mensaje" => "Error al obtener los clientes: " . $e->getMessage(),
-        "datos" => []
-    ]);
+
+    responder(null, false, "Error general: " . $e->getMessage(), $conexion ?? null);
 }
-?>
