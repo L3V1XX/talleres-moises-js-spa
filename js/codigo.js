@@ -1,500 +1,472 @@
 "use strict";
 
-// =================== EJEMPLO DEL PROFESOR CON TIENDA COMPONENTES ===================
-
-// // MAIN PROGRAM
-// var oEmpresa = new Empresa();
-
-// registrarEventos();
-
-// // Registro de eventos
-// function registrarEventos() {
-//   // Opciones de menú
-//   document
-//     .querySelector("#mnuAltaTipo")
-//     .addEventListener("click", mostrarFormulario);
-//   document
-//     .querySelector("#mnuBuscarComponente")
-//     .addEventListener("click", mostrarFormulario);
-//   document
-//     .querySelector("#mnuListadoTipo")
-//     .addEventListener("click", mostrarListadoTipo);
-//   document
-//     .querySelector("#mnuListadoPorTipo")
-//     .addEventListener("click", mostrarFormulario);
-//   document
-//     .querySelector("#mnuAltaComponente")
-//     .addEventListener("click", mostrarFormulario);
-//   document
-//     .querySelector("#mnuListadoComponente")
-//     .addEventListener("click", procesarListadoComponente);
-//   document
-//     .querySelector("#mnuListadoPorPrecio")
-//     .addEventListener("click", mostrarFormulario);
-//     document
-//     .querySelector("#mnuBuscarTipoNombre")
-//     .addEventListener("click", mostrarFormulario);
-//   // Botones
-//   frmAltaTipo.btnAceptarAltaTipo.addEventListener("click", procesarAltaTipo);
-//   frmBuscarComponente.btnBuscarComponente.addEventListener(
-//     "click",
-//     procesarBuscarComponente
-//   );
-//   frmListadoTipo.btnAceptarListadoPorTipo.addEventListener(
-//     "click",
-//     procesarListadoPorTipo
-//   );
-//   frmModificarComponente.btnAceptarModComponente.addEventListener(
-//     "click",
-//     procesarModificarComponente
-//   );
-//   frmAltaComponente.btnAceptarAltaComponente.addEventListener(
-//     "click",
-//     procesarAltaComponente
-//   );
-//   frmListadoPrecio.btnAceptarListadoPorPrecio.addEventListener(
-//     "click",
-//     procesarListadoPorPrecio
-//   );
-//   frmBuscarTipoNombre.btnBuscarTipoNombre.addEventListener(
-//     "click",
-//     procesarBuscarTipoNombre
-//   );
-// }
-
-// function mostrarFormulario(oEvento) {
-//   let opcionMenu = oEvento.target.id; // Opción de menú pulsada (su id)
-
-//   ocultarFormularios();
-
-//   switch (opcionMenu) {
-//     case "mnuListadoPorPrecio":
-//       frmListadoPrecio.classList.remove("d-none");
-//       break;
-//     case "mnuAltaTipo":
-//       frmAltaTipo.classList.remove("d-none");
-//       break;
-//     case "mnuBuscarComponente":
-//       frmBuscarComponente.classList.remove("d-none");
-//       break;
-//     case "mnuListadoPorTipo":
-//       frmListadoTipo.classList.remove("d-none");
-//       actualizarDesplegableTipos(undefined);
-//       break;
-//     case "mnuAltaComponente":
-//       frmAltaComponente.classList.remove("d-none");
-//       actualizarDesplegableTipos(undefined);
-//       break;
-//     case "mnuBuscarTipoNombre":
-//       frmBuscarTipoNombre.classList.remove("d-none");
-//       break;
-//   }
-// }
-
-// function ocultarFormularios() {
-//   frmAltaTipo.classList.add("d-none");
-//   frmBuscarComponente.classList.add("d-none");
-//   frmListadoTipo.classList.add("d-none");
-//   frmModificarComponente.classList.add("d-none");
-//   frmAltaComponente.classList.add("d-none");
-//   frmListadoPrecio.classList.add("d-none");
-//   frmBuscarTipoNombre.classList.add("d-none");
-//   // Borrado del contenido de capas con resultados
-//   document.querySelector("#resultadoBusqueda").innerHTML = "";
-//   document.querySelector("#listados").innerHTML = "";
-// }
-
-// async function procesarListadoPorPrecio() {
-//   let precioMin = parseFloat(frmListadoPrecio.txtPrecioMinimo.value.trim());
-//   let precioMax = parseFloat(frmListadoPrecio.txtPrecioMaximo.value.trim());
-
-//   let respuesta = await oEmpresa.listadoPorPrecio(precioMin, precioMax);
-
-//   let listado = '<table class="table table-striped">';
-//   listado +=
-//     "<thead><tr><th>IDCOMPONENTE</th><th>NOMBRE</th><th>DESCRIPCION</th><th>PRECIO</th><th>TIPO</th></tr></thead>";
-//   listado += "<tbody>";
-
-//   for (let fila of respuesta.datos) {
-//     listado += "<tr><td>" + fila.idcomponente + "</td>";
-//     listado += "<td>" + fila.nombre + "</td>";
-//     listado += "<td>" + fila.descripcion + "</td>";
-//     listado += "<td>" + fila.precio + "</td>";
-//     listado += "<td>" + fila.tipo + "</td></tr>";
-//   }
-
-//   listado += "</tbody></table>";
-
-//   // Agregamos el contenido a la capa de listados
-//   document.querySelector("#listados").innerHTML = listado;
-// }
-
-// async function procesarListadoComponente() {
-//   // Obtener el listado de componentes
-//   let respuesta = await oEmpresa.listadoComponentes();
-
-//   let listado = '<table class="table table-striped">';
-//   listado +=
-//     "<thead><tr><th>IDCOMPONENTE</th><th>NOMBRE</th><th>DESCRIPCION</th><th>PRECIO</th><th>TIPO</th></tr></thead>";
-//   listado += "<tbody>";
-
-//   for (let fila of respuesta.datos) {
-//     listado += "<tr><td>" + fila.idcomponente + "</td>";
-//     listado += "<td>" + fila.nombre + "</td>";
-//     listado += "<td>" + fila.descripcion + "</td>";
-//     listado += "<td>" + fila.precio + "</td>";
-//     listado += "<td>" + fila.tipo + "</td></tr>";
-//   }
-
-//   listado += "</tbody></table>";
-
-//   // Agregamos el contenido a la capa de listados
-//   document.querySelector("#listados").innerHTML = listado;
-// }
-
-// async function actualizarDesplegableTipos(idTipoSeleccionado) {
-//   let respuesta = await oEmpresa.getTipos();
-//   let options = "";
-
-//   for (let tipo of respuesta.datos) {
-//     if (idTipoSeleccionado && idTipoSeleccionado == tipo.idtipo) {
-//       // Si llega el parámetro ( != undefined )
-//       options +=
-//         "<option selected value='" +
-//         tipo.idtipo +
-//         "' >" +
-//         tipo.tipo +
-//         "</option>";
-//     } else {
-//       options +=
-//         "<option value='" + tipo.idtipo + "' >" + tipo.tipo + "</option>";
-//     }
-//   }
-//   // Agrego los options generados a partir del contenido de la BD en todos los desplegables
-//   frmListadoTipo.lstTipo.innerHTML = options;
-//   frmModificarComponente.lstModTipo.innerHTML = options;
-//   frmAltaComponente.lstAltaTipo.innerHTML = options;
-// }
-
-// // Procesos de botones
-// async function procesarBuscarComponente() {
-//   if (validarBuscarComponente()) {
-//     let idComponente = parseInt(
-//       frmBuscarComponente.txtIdComponente.value.trim()
-//     );
-
-//     let respuesta = await oEmpresa.buscarComponente(idComponente);
-
-//     if (!respuesta.error) {
-//       // Si NO hay error
-//       let resultadoBusqueda = document.querySelector("#resultadoBusqueda");
-
-//       // Escribimos resultado
-//       let tablaSalida = "<table class='table'>";
-//       tablaSalida +=
-//         "<thead><tr><th>IDCOMPONENTE</th><th>NOMBRE</th><th>DESCRIPCION</th><th>PRECIO</th><th>TIPO</th><th>ACCION</th></tr></thead>";
-//       tablaSalida += "<tbody><tr>";
-//       tablaSalida += "<td>" + respuesta.datos.idcomponente + "</td>";
-//       tablaSalida += "<td>" + respuesta.datos.nombre + "</td>";
-//       tablaSalida += "<td>" + respuesta.datos.descripcion + "</td>";
-//       tablaSalida += "<td>" + respuesta.datos.precio + "</td>";
-//       tablaSalida += "<td>" + respuesta.datos.tipodesc + "</td>";
-//       tablaSalida +=
-//         "<td><input type='button' class='btn btn-danger' value='Borrar' id='btnBorrarComponente' data-idcomponente='" +
-//         respuesta.datos.idcomponente +
-//         "'></td>";
-//       tablaSalida += "</tr></tbody></table>";
-
-//       resultadoBusqueda.innerHTML = tablaSalida;
-//       // resultadoBusqueda.style.display = 'block';
-
-//       // Registrar evento para el botón borrar
-//       document
-//         .querySelector("#btnBorrarComponente")
-//         .addEventListener("click", borrarComponente);
-//     } else {
-//       // Si hay error
-//       alert(respuesta.mensaje);
-//     }
-//   }
-// }
-
-// async function procesarListadoPorTipo() {
-//   // Recuperar idTipo seleccionado
-//   let idTipo = frmListadoTipo.lstTipo.value;
-
-//   let respuesta = await oEmpresa.listadoPorTipo(idTipo);
-
-//   let tabla = "<table class='table table-striped' id='listadoPorTipo'>";
-//   tabla +=
-//     "<thead><tr><th>IDCOMPONENTE</th><th>NOMBRE</th><th>DESCRIPCION</th><th>PRECIO</th><th>TIPO</th><th>ACCION</th></tr></thead><tbody>";
-
-//   for (let componente of respuesta.datos) {
-//     tabla += "<tr><td>" + componente.idcomponente + "</td>";
-//     tabla += "<td>" + componente.nombre + "</td>";
-//     tabla += "<td>" + componente.descripcion + "</td>";
-//     tabla += "<td>" + componente.precio + "</td>";
-//     tabla += "<td>" + componente.tipo + "</td>";
-
-//     tabla +=
-//       "<td><button class='btn btn-primary' data-componente='" +
-//       JSON.stringify(componente) +
-//       "'><i class='bi bi-pencil-square'></i></button></td></tr>";
-//   }
-
-//   tabla += "</tbody></table>";
-
-//   // Agregamos el contenido a la capa de listados
-//   document.querySelector("#listados").innerHTML = tabla;
-//   // Agregar manejador de evento para toda la tabla
-//   document
-//     .querySelector("#listadoPorTipo")
-//     .addEventListener("click", procesarBotonEditarComponente);
-// }
-
-// function procesarBotonEditarComponente(oEvento) {
-//   let boton = null;
-
-//   // Verificamos si han hecho clic sobre el botón o el icono
-//   if (oEvento.target.nodeName == "I" || oEvento.target.nodeName == "BUTTON") {
-//     if (oEvento.target.nodeName == "I") {
-//       // Pulsacion sobre el icono
-//       boton = oEvento.target.parentElement; // El padre es el boton
-//     } else {
-//       boton = oEvento.target;
-//     }
-
-//     // 1.Ocultar todos los formularios
-//     ocultarFormularios();
-//     // 2.Mostrar el formulario de modificación de componentes
-//     frmModificarComponente.classList.remove("d-none");
-//     // 3. Rellenar los datos de este formulario con los del componente
-//     let componente = JSON.parse(boton.dataset.componente);
-
-//     frmModificarComponente.txtModIdComponente.value = componente.idcomponente;
-//     frmModificarComponente.txtModNombre.value = componente.nombre;
-//     frmModificarComponente.txtModDescripcion.value = componente.descripcion;
-//     frmModificarComponente.txtModPrecio.value = componente.precio;
-//     actualizarDesplegableTipos(componente.idtipo);
-//   }
-// }
-
-// async function procesarModificarComponente() {
-//   // Recuperar datos del formulario frmModificarComponente
-//   let idComponente = frmModificarComponente.txtModIdComponente.value.trim();
-//   let nombre = frmModificarComponente.txtModNombre.value.trim();
-//   let descripcion = frmModificarComponente.txtModDescripcion.value.trim();
-//   let precio = parseFloat(frmModificarComponente.txtModPrecio.value.trim());
-//   let idTipo = frmModificarComponente.lstModTipo.value;
-
-//   // Validar datos del formulario
-//   if (validarModComponente()) {
-//     let respuesta = await oEmpresa.modificarComponente(
-//       new Componente(idComponente, nombre, descripcion, precio, idTipo)
-//     );
-
-//     alert(respuesta.mensaje);
-
-//     if (respuesta.ok) {
-//       // Si NO hay error
-//       //Resetear formulario
-//       frmModificarComponente.reset();
-//       // Ocultar el formulario
-//       frmModificarComponente.classList.add("d-none");
-//     }
-//   }
-// }
-
-// function validarModComponente() {
-//   // Recuperar datos del formulario frmModificarComponente
-//   let idComponente = frmModificarComponente.txtModIdComponente.value.trim();
-//   let nombre = frmModificarComponente.txtModNombre.value.trim();
-//   let descripcion = frmModificarComponente.txtModDescripcion.value.trim();
-//   let precio = parseFloat(frmModificarComponente.txtModPrecio.value.trim());
-//   let idTipo = parseInt(frmModificarComponente.lstModTipo.value);
-
-//   let valido = true;
-//   let errores = "";
-
-//   if (isNaN(idComponente)) {
-//     valido = false;
-//     errores += "El identificador de componente debe ser numérico";
-//   }
-
-//   if (isNaN(precio)) {
-//     valido = false;
-//     errores += "El precio del componente debe ser numérico";
-//   }
-
-//   if (nombre.length == 0 || descripcion.length == 0) {
-//     valido = false;
-//     errores += "El nombre y la descripción no pueden estar vacíos";
-//   }
-
-//   if (!valido) {
-//     // Hay errores
-//     alert(errores);
-//   }
-
-//   return valido;
-// }
-
-// async function borrarComponente(oEvento) {
-//   let boton = oEvento.target;
-//   let idComponente = boton.dataset.idcomponente;
-
-//   let respuesta = await oEmpresa.borrarComponente(idComponente);
-
-//   alert(respuesta.mensaje);
-
-//   if (!respuesta.error) {
-//     // Si NO hay error
-//     // Borrado de la tabla html
-//     document.querySelector("#resultadoBusqueda").innerHTML = "";
-//   }
-// }
-
-// function validarBuscarComponente() {
-//   let idComponente = parseInt(frmBuscarComponente.txtIdComponente.value.trim());
-//   let valido = true;
-//   let errores = "";
-
-//   if (isNaN(idComponente)) {
-//     valido = false;
-//     errores += "El identificador de componente debe ser numérico";
-//   }
-
-//   if (!valido) {
-//     // Hay errores
-//     alert(errores);
-//   }
-
-//   return valido;
-// }
-
-// async function procesarAltaTipo() {
-//   if (validarAltaTipo()) {
-//     let tipo = frmAltaTipo.txtTipo.value.trim();
-//     let descripcion = frmAltaTipo.txtDescripcion.value.trim();
-
-//     let respuesta = await oEmpresa.altaTipo(new Tipo(null, tipo, descripcion));
-
-//     alert(respuesta.mensaje);
-
-//     if (respuesta.ok) {
-//       // Si NO hay error
-//       //Resetear formulario
-//       frmAltaTipo.reset();
-//       // Ocultar el formulario
-//       frmAltaTipo.classList.add("d-none");
-//     }
-//   }
-// }
-
-// function validarAltaTipo() {
-//   let tipo = frmAltaTipo.txtTipo.value.trim();
-//   let descripcion = frmAltaTipo.txtDescripcion.value.trim();
-//   let valido = true;
-//   let errores = "";
-
-//   if (tipo.length == 0 || descripcion.length == 0) {
-//     valido = false;
-//     errores += "Faltan datos por rellenar";
-//   }
-
-//   if (!valido) {
-//     // Hay errores
-//     alert(errores);
-//   }
-
-//   return valido;
-// }
-
-// // Mostrar listado de tipos de componentes
-// function mostrarListadoTipo() {
-//   open("listado_tipos.html ");
-// }
-
-// async function procesarAltaComponente() {
-//   // Recuperar datos del formulario frmAltaComponente
-//   let nombre = frmAltaComponente.txtAltaNombre.value.trim();
-//   let descripcion = frmAltaComponente.txtAltaDescripcion.value.trim();
-//   let precio = parseFloat(frmAltaComponente.txtAltaPrecio.value.trim());
-//   let idTipo = parseInt(frmAltaComponente.lstAltaTipo.value);
-
-//   // Validar datos del formulario
-//   if (validarAltaComponente()) {
-//     let respuesta = await oEmpresa.altaComponente(
-//       new Componente(null, nombre, descripcion, precio, idTipo)
-//     );
-//     alert(respuesta.mensaje);
-
-//     if (respuesta.ok) {
-//       // Si NO hay error
-//       //Resetear formulario
-//       frmAltaComponente.reset();
-//       // Ocultar el formulario
-//       frmAltaComponente.classList.add("d-none");
-//     }
-//   }
-// }
-
-// function validarAltaComponente() {
-//   // Recuperar datos del formulario frmModificarComponente
-//   let nombre = frmAltaComponente.txtAltaNombre.value.trim();
-//   let descripcion = frmAltaComponente.txtAltaDescripcion.value.trim();
-//   let precio = parseFloat(frmAltaComponente.txtAltaPrecio.value.trim());
-//   let idTipo = parseInt(frmAltaComponente.lstAltaTipo.value);
-
-//   let valido = true;
-//   let errores = "";
-
-//   if (isNaN(precio)) {
-//     valido = false;
-//     errores += "El precio del componente debe ser numérico";
-//   }
-
-//   if (nombre.length == 0 || descripcion.length == 0) {
-//     valido = false;
-//     errores += "El nombre y la descripción no pueden estar vacíos";
-//   }
-
-//   if (!valido) {
-//     // Hay errores
-//     alert(errores);
-//   }
-
-//   return valido;
-// }
-
-
-// async function procesarBuscarTipoNombre() {
-//   let nombreTipo = frmBuscarTipoNombre.txtNombreTipo.value.trim();
-
-//   let respuesta = await oEmpresa.buscarTipoPorNombre(nombreTipo);
-
-//   let tabla = "<table class='table table-striped' id='listadoTipoNombre'>";
-//   tabla +=
-//     "<thead><tr><th>IDTIPO</th><th>NOMBRE TIPO</th><th>DESCRIPCION</th><th>ACCION</th></tr></thead><tbody>";
-
-//   for (let tipoComponente of respuesta.datos) {
-//     tabla += "<tr><td>" + tipoComponente.idtipo + "</td>";
-//     tabla += "<td>" + tipoComponente.tipo + "</td>";
-//     tabla += "<td>" + tipoComponente.descripcion + "</td>";
-    
-
-//     tabla +=
-//       "<td><button class='btn btn-primary' data-tipo='" +
-//       JSON.stringify(tipoComponente) +
-//       "'><i class='bi bi-pencil-square'></i></button></td></tr>";
-//   }
-
-//   tabla += "</tbody></table>";
-
-//   // Agregamos el contenido a la capa de listados
-//   document.querySelector("#listados").innerHTML = tabla;
-//   // Agregar manejador de evento para toda la tabla
-//   document
-//     .querySelector("#listadoTipoNombre")
-//     .addEventListener("click", procesarBotonEditarComponente);
-// }
+var oEmpresa = new Empresa();
+
+// >>> CLIENTES (Javier): variables globales aquí
+
+// >>> COCHES
+var idCochePendienteBorrar = null;
+var cochesMostrados = [];
+
+// >>> RESERVAS (Carmen): variables globales aquí
+
+// >>> SERVICIOS (Moises): variables globales aquí
+
+registrarEventos();
+mostrarInicio();
+
+// =============================================================================
+// 2. REGISTRO DE EVENTOS
+// =============================================================================
+function registrarEventos() {
+  // Inicio (logo y opción del menú)
+  document.querySelector("#mnuInicio").addEventListener("click", mostrarInicio);
+  document.querySelector("#mnuLogo").addEventListener("click", mostrarInicio);
+
+  // >>> CLIENTES (Javier): eventos del menú (#mnu...Cliente) y de sus formularios/botones aquí
+
+  // >>> COCHES
+  document
+    .querySelector("#mnuAltaCoche")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuBuscarCoche")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuListarCoche")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuFiltrarCoche")
+    .addEventListener("click", mostrarFormulario);
+
+  frmAltaCoche.addEventListener("submit", procesarGuardarCoche);
+  // Tras el reset nativo del botón, la fecha de entrada vuelve a ser hoy
+  document
+    .querySelector("#btnReiniciarCoche")
+    .addEventListener("click", () => setTimeout(prepararAltaCoche, 0));
+  document
+    .querySelector("#btnCancelarCoche")
+    .addEventListener("click", () => {
+      resetearFormularioCoche();
+      ocultarFormularios();
+      vistaListarCoche.classList.remove("d-none");
+      procesarListadoCoches();
+    });
+  frmBuscarCoche.addEventListener("submit", procesarBuscarCoches);
+  frmFiltroCoches.addEventListener("submit", procesarFiltrarCoches);
+  frmFiltroCoches.addEventListener("reset", () => {
+    document.querySelector("#resultadosCoches").innerHTML = "";
+  });
+
+  // >>> RESERVAS (Carmen): eventos del menú (#mnu...Reserva) y de sus formularios/botones aquí
+
+  // >>> SERVICIOS (Moises): eventos del menú (#mnu...Servicio) y de sus formularios/botones aquí
+
+  // COMPARTIDO: confirmación de borrado en el modal de Bootstrap (un único botón para todos)
+  document
+    .querySelector("#btnConfirmarBorrarDefinitivo")
+    .addEventListener("click", ejecutarBorrado);
+
+  // COMPARTIDO: año máximo = año actual en los campos de año
+  for (let campo of document.querySelectorAll(".campo-anio")) {
+    campo.max = new Date().getFullYear();
+  }
+}
+
+// =============================================================================
+// 3. MOSTRAR FORMULARIO (según la opción de menú pulsada)
+// =============================================================================
+function mostrarFormulario(oEvento) {
+  oEvento.preventDefault();
+  let opcionMenu = oEvento.currentTarget.id;
+
+  ocultarFormularios();
+
+  switch (opcionMenu) {
+    // >>> CLIENTES (Javier): cases mnuAltaCliente, mnuBuscarCliente, mnuListarCliente, mnuFiltrarCliente
+
+    // >>> COCHES
+    case "mnuAltaCoche":
+      resetearFormularioCoche();
+      vistaAltaCoche.classList.remove("d-none");
+      actualizarDesplegableClientes();
+      break;
+    case "mnuBuscarCoche":
+      vistaBuscarCoche.classList.remove("d-none");
+      break;
+    case "mnuListarCoche":
+      vistaListarCoche.classList.remove("d-none");
+      procesarListadoCoches();
+      break;
+    case "mnuFiltrarCoche":
+      vistaFiltrarCoche.classList.remove("d-none");
+      actualizarDesplegableClientes();
+      break;
+
+    // >>> RESERVAS (Carmen): cases mnuAltaReserva, mnuBuscarReserva, mnuListarReserva, mnuFiltrarReserva
+
+    // >>> SERVICIOS (Moises): cases mnuAltaServicio, mnuBuscarServicio, mnuListarServicio, mnuFiltrarServicio
+  }
+}
+
+// =============================================================================
+// 4. OCULTAR FORMULARIOS (poner "d-none" a todas las vistas antes de mostrar una)
+// =============================================================================
+function ocultarFormularios() {
+  vistaInicio.classList.add("d-none");
+
+  // >>> CLIENTES (Javier): ocultar tus vistas y vaciar #resultadosClientes
+
+  // >>> COCHES
+  vistaAltaCoche.classList.add("d-none");
+  vistaBuscarCoche.classList.add("d-none");
+  vistaListarCoche.classList.add("d-none");
+  vistaFiltrarCoche.classList.add("d-none");
+  document.querySelector("#resultadosCoches").innerHTML = "";
+
+  // >>> RESERVAS (Carmen): ocultar tus vistas y vaciar tus resultados
+
+  // >>> SERVICIOS (Moises): ocultar tus vistas y vaciar #resultadosServicios
+}
+
+// =============================================================================
+// 5. FUNCIONES COMPARTIDAS (no las modifiques sin avisar al grupo)
+// =============================================================================
+
+// Escapa texto antes de meterlo en innerHTML
+function esc(texto) {
+  const d = document.createElement("div");
+  d.textContent = texto ?? "";
+  return d.innerHTML;
+}
+
+function mostrarInicio(oEvento) {
+  if (oEvento) oEvento.preventDefault();
+  ocultarFormularios();
+  vistaInicio.classList.remove("d-none");
+  // TODO (grupo): pintar el panel de inicio (contadores y próximas reservas) con oEmpresa.getPanel()
+}
+
+// El mismo botón del modal sirve para confirmar el borrado de cualquier entidad.
+// Cada compañero añade aquí su "if (idXxxPendienteBorrar) return ejecutarBorradoXxx();"
+function ejecutarBorrado() {
+  // >>> CLIENTES (Javier): if (idClientePendienteBorrar) return ejecutarBorradoCliente();
+  if (idCochePendienteBorrar) {
+    return ejecutarBorradoCoche();
+  }
+  // >>> RESERVAS (Carmen): if (idReservaPendienteBorrar) return ejecutarBorradoReserva();
+  // >>> SERVICIOS (Moises): if (idServicioPendienteBorrar) return ejecutarBorradoServicio();
+}
+
+function mostrarToast(mensaje, esExito = true) {
+  const toastEl = document.querySelector("#toastNotificacion");
+
+  document.querySelector("#toastMensaje").textContent = mensaje;
+  document.querySelector("#toastTitulo").textContent = esExito
+    ? "Operación correcta"
+    : "Ha ocurrido un error";
+
+  // Color del borde lateral e icono según el resultado
+  toastEl.classList.remove("toast-exito", "toast-error");
+  toastEl.classList.add(esExito ? "toast-exito" : "toast-error");
+  document.querySelector("#toastIcono").className =
+    "bi fs-4 toast-taller-icono " +
+    (esExito ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill");
+
+  bootstrap.Toast.getOrCreateInstance(toastEl).show();
+}
+
+// =============================================================================
+// >>> CLIENTES (Javier): TUS FUNCIONES VAN AQUÍ
+//     Sugerido: pintarTablaClientes, procesarListadoClientes, procesarBuscarClientes,
+//     procesarFiltrarClientes, ejecutarBorradoCliente, procesarGuardarCliente...
+//     Además, tu desplegable de clientes debe exponer oEmpresa.getClientes()
+//     porque el formulario de COCHES lo usa para elegir el dueño del coche.
+// =============================================================================
+
+// =============================================================================
+// >>> COCHES (Jose Manuel)
+// =============================================================================
+
+// Rellena los desplegables de clientes (alta/edición y filtro de coches)
+// DEPENDE de oEmpresa.getClientes() (parte de Javier / Clientes)
+async function actualizarDesplegableClientes(idClienteSeleccionado) {
+  let respuesta = await oEmpresa.getClientes();
+
+  let optionsAlta = "<option value=''>-- Seleccione cliente --</option>";
+  let optionsFiltro = "<option value=''>-- Todos los clientes --</option>";
+
+  if (respuesta.ok && Array.isArray(respuesta.datos)) {
+    for (let cliente of respuesta.datos) {
+      let opcion =
+        "<option value='" + cliente.id + "'%SEL%>" + esc(cliente.nombre_completo) + "</option>";
+      let sel = idClienteSeleccionado == cliente.id ? " selected" : "";
+      optionsAlta += opcion.replace("%SEL%", sel);
+      optionsFiltro += opcion.replace("%SEL%", "");
+    }
+  } else {
+    mostrarToast(respuesta.mensaje, false);
+  }
+
+  // Se conserva el cliente elegido en el filtro si ya había uno
+  let filtroActual = frmFiltroCoches.lstClienteFiltro.value;
+  frmAltaCoche.lstClienteCoche.innerHTML = optionsAlta;
+  frmFiltroCoches.lstClienteFiltro.innerHTML = optionsFiltro;
+  frmFiltroCoches.lstClienteFiltro.value = filtroActual;
+}
+
+function fechaHoy() {
+  let hoy = new Date();
+  let mes = String(hoy.getMonth() + 1).padStart(2, "0");
+  let dia = String(hoy.getDate()).padStart(2, "0");
+  return hoy.getFullYear() + "-" + mes + "-" + dia;
+}
+
+// Deja el formulario en modo "Alta" (sin limpiar los campos: eso lo hace reset)
+function prepararAltaCoche() {
+  document.querySelector("#id_coche").value = "";
+  document.querySelector("#tituloFormularioCoche").textContent = "Alta de coche";
+  document.querySelector("#iconoTituloCoche").className = "bi bi-car-front";
+  document.querySelector("#btnAceptarAltaCoche span").textContent = "Aceptar";
+  document.querySelector("#colReiniciarCoche").classList.remove("d-none");
+  document.querySelector("#colCancelarCoche").classList.add("d-none");
+  document.querySelector("#txtFechaEntrada").value = fechaHoy();
+}
+
+function resetearFormularioCoche() {
+  frmAltaCoche.reset();
+  prepararAltaCoche();
+}
+
+// HTML de una tabla de coches
+function pintarTablaCoches(datos, mensajeVacio, mostrarTotal) {
+  cochesMostrados = datos;
+  let cont = document.querySelector("#resultadosCoches");
+
+  if (datos.length === 0) {
+    cont.innerHTML = "<div class='alert alert-info'>" + mensajeVacio + "</div>";
+    return;
+  }
+
+  let html = "";
+  if (mostrarTotal) {
+    html +=
+      "<p class='text-muted'>" + datos.length + " coche(s) encontrado(s)</p>";
+  }
+
+  html +=
+    "<div class='table-responsive'><table class='table table-striped table-hover align-middle' id='tablaListadoCoches'>" +
+    "<thead><tr>" +
+    "<th>Matrícula</th><th>Marca</th><th>Modelo</th><th>Año</th>" +
+    "<th>Fecha de entrada</th><th>Reparar</th><th>Cliente</th><th>Acciones</th>" +
+    "</tr></thead><tbody>";
+
+  for (let fila of datos) {
+    let cliente = fila.nombre_completo
+      ? esc(fila.nombre_completo)
+      : "<span class='text-muted'>Sin cliente</span>";
+
+    let reparar =
+      fila.reparar == 1
+        ? "<span class='badge text-bg-warning'>Sí</span>"
+        : "<span class='badge text-bg-secondary'>No</span>";
+
+    html +=
+      "<tr>" +
+      "<td class='fw-semibold'>" + esc(fila.matricula) + "</td>" +
+      "<td>" + esc(fila.marca) + "</td>" +
+      "<td>" + esc(fila.modelo) + "</td>" +
+      "<td>" + esc(String(fila.anio)) + "</td>" +
+      "<td>" + esc(fila.fecha_entrada) + "</td>" +
+      "<td>" + reparar + "</td>" +
+      "<td>" + cliente + "</td>" +
+      "<td class='text-nowrap'>" +
+      "<button type='button' class='btn btn-sm btn-outline-primary me-1 btn-editar-coche' data-id='" +
+      fila.id +
+      "' title='Editar'><i class='bi bi-pencil'></i></button>" +
+      "<button type='button' class='btn btn-sm btn-outline-danger btn-eliminar-coche' data-id='" +
+      fila.id +
+      "' data-matricula='" +
+      esc(fila.matricula) +
+      "' title='Borrar'><i class='bi bi-trash'></i></button>" +
+      "</td></tr>";
+  }
+
+  html += "</tbody></table></div>";
+  cont.innerHTML = html;
+
+  cont
+    .querySelector("#tablaListadoCoches")
+    .addEventListener("click", procesarAccionTablaCoches);
+}
+
+// Botón "Nuevo coche" bajo el listado
+function pieListadoCoches() {
+  document.querySelector("#resultadosCoches").insertAdjacentHTML(
+    "beforeend",
+    "<button type='button' class='btn btn-secondary px-4 fw-semibold mb-4' id='btnNuevoCoche'>" +
+      "<i class='bi bi-plus-lg me-1' aria-hidden='true'></i> Nuevo coche</button>",
+  );
+  document
+    .querySelector("#btnNuevoCoche")
+    .addEventListener("click", () => document.querySelector("#mnuAltaCoche").click());
+}
+
+async function procesarListadoCoches() {
+  let respuesta = await oEmpresa.listadoCoche();
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosCoches").innerHTML =
+      "<div class='alert alert-warning'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  pintarTablaCoches(respuesta.datos, "No hay coches registrados.", false);
+  pieListadoCoches();
+}
+
+async function procesarBuscarCoches(oEvento) {
+  oEvento.preventDefault();
+
+  let texto = frmBuscarCoche.txtBuscarCoche.value.trim();
+  let respuesta = await oEmpresa.buscarCoche(texto);
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosCoches").innerHTML =
+      "<div class='alert alert-warning'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  pintarTablaCoches(respuesta.datos, "No se han encontrado coches.", true);
+}
+
+async function procesarFiltrarCoches(oEvento) {
+  oEvento.preventDefault();
+
+  let respuesta = await oEmpresa.filtrarCoche(
+    frmFiltroCoches.txtMarcaFiltro.value.trim(),
+    frmFiltroCoches.lstClienteFiltro.value,
+    frmFiltroCoches.lstRepararFiltro.value,
+    frmFiltroCoches.txtAnioMin.value,
+    frmFiltroCoches.txtAnioMax.value,
+  );
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosCoches").innerHTML =
+      "<div class='alert alert-warning'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  pintarTablaCoches(
+    respuesta.datos,
+    "No hay coches que cumplan los filtros.",
+    true,
+  );
+}
+
+function procesarAccionTablaCoches(oEvento) {
+  let btnEditar = oEvento.target.closest(".btn-editar-coche");
+  let btnEliminar = oEvento.target.closest(".btn-eliminar-coche");
+
+  if (btnEditar) {
+    let coche = cochesMostrados.find((c) => c.id == btnEditar.dataset.id);
+    if (coche) cargarFormularioEdicionCoche(coche);
+  } else if (btnEliminar) {
+    idCochePendienteBorrar = btnEliminar.dataset.id;
+
+    document.querySelector("#mensajeModalBorrar").textContent =
+      "¿Seguro que quieres borrar el coche " + btnEliminar.dataset.matricula + "?";
+    bootstrap.Modal.getOrCreateInstance(
+      document.querySelector("#modalConfirmarBorrar"),
+    ).show();
+  }
+}
+
+async function ejecutarBorradoCoche() {
+  if (!idCochePendienteBorrar) return;
+
+  bootstrap.Modal.getOrCreateInstance(
+    document.querySelector("#modalConfirmarBorrar"),
+  ).hide();
+
+  let respuesta = await oEmpresa.borrarCoche(idCochePendienteBorrar);
+  idCochePendienteBorrar = null;
+
+  mostrarToast(respuesta.mensaje, respuesta.ok);
+
+  if (respuesta.ok) {
+    ocultarFormularios();
+    vistaListarCoche.classList.remove("d-none");
+    procesarListadoCoches();
+  }
+}
+
+async function cargarFormularioEdicionCoche(coche) {
+  ocultarFormularios();
+  resetearFormularioCoche();
+  vistaAltaCoche.classList.remove("d-none");
+
+  document.querySelector("#tituloFormularioCoche").textContent = "Editar coche";
+  document.querySelector("#iconoTituloCoche").className = "bi bi-pencil-square";
+  document.querySelector("#btnAceptarAltaCoche span").textContent = "Guardar cambios";
+  document.querySelector("#colReiniciarCoche").classList.add("d-none");
+  document.querySelector("#colCancelarCoche").classList.remove("d-none");
+
+  await actualizarDesplegableClientes(coche.id_cliente);
+
+  document.querySelector("#id_coche").value = coche.id;
+  document.querySelector("#txtMatricula").value = coche.matricula;
+  document.querySelector("#txtAnio").value = coche.anio;
+  document.querySelector("#txtMarca").value = coche.marca;
+  document.querySelector("#txtModelo").value = coche.modelo;
+  document.querySelector("#txtFechaEntrada").value = coche.fecha_entrada;
+  document.querySelector("#chkReparar").checked = coche.reparar == 1;
+}
+
+// Sirve tanto para Alta (id vacío) como para Edición (id con valor)
+async function procesarGuardarCoche(oEvento) {
+  oEvento.preventDefault();
+
+  let id = document.querySelector("#id_coche").value.trim();
+
+  let oCoche = new Coche(
+    id !== "" ? parseInt(id) : null,
+    document.querySelector("#txtMatricula").value.trim(),
+    document.querySelector("#txtMarca").value.trim(),
+    document.querySelector("#txtModelo").value.trim(),
+    parseInt(document.querySelector("#txtAnio").value),
+    document.querySelector("#txtFechaEntrada").value,
+    document.querySelector("#chkReparar").checked ? 1 : 0,
+    parseInt(document.querySelector("#lstClienteCoche").value),
+  );
+
+  let respuesta;
+  if (id !== "") {
+    respuesta = await oEmpresa.modificarCoche(oCoche);
+  } else {
+    respuesta = await oEmpresa.altaCoche(oCoche);
+  }
+
+  mostrarToast(respuesta.mensaje, respuesta.ok);
+
+  if (respuesta.ok) {
+    resetearFormularioCoche();
+    ocultarFormularios();
+    vistaListarCoche.classList.remove("d-none");
+    procesarListadoCoches();
+  }
+}
+
+// =============================================================================
+// >>> RESERVAS (Carmen): TUS FUNCIONES VAN AQUÍ
+//     Sugerido: desplegable de coches, pintarTablaReservas, procesarListadoReservas,
+//     procesarBuscarReservas, procesarFiltrarReservas, ejecutarBorradoReserva,
+//     procesarGuardarReserva...
+//     Moises necesita oEmpresa.getReservas() para el desplegable de sus servicios.
+// =============================================================================
+
+// =============================================================================
+// >>> SERVICIOS (Moises): TUS FUNCIONES VAN AQUÍ
+//     Sugerido: pintarTablaServicios, procesarListadoServicios, procesarBuscarServicios,
+//     procesarFiltrarServicios, ejecutarBorradoServicio, procesarGuardarServicio...
+// =============================================================================
