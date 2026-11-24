@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Talleres Moises · Gestión</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon/favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css?v=2" rel="stylesheet">
+  <link href="css/admin.css" rel="stylesheet">
+  <!-- JavaScript de Bootstrap (menús, modales y toasts) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- ======================= BARRA DE NAVEGACIÓN ======================= -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#" id="mnuLogo">
+        <img src="img/logo/logo.webp" alt="Talleres Moises">
+      </a>
+
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+              aria-controls="menuPrincipal" aria-expanded="false"
+              aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="mnuInicio"><i class="bi bi-house-fill"></i> Inicio</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-people-fill"></i> Clientes
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" id="mnuAltaCliente"><i class="bi bi-plus-circle me-2"></i>Alta de clientes</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="mnuBuscarCliente"><i class="bi bi-search me-2"></i>Buscar un cliente</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuListarCliente"><i class="bi bi-list-ul me-2"></i>Listado de clientes</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuFiltrarCliente"><i class="bi bi-funnel me-2"></i>Listado filtrado de clientes</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-car-front-fill"></i> Coches
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" id="mnuAltaCoche"><i class="bi bi-plus-circle me-2"></i>Alta de coches</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="mnuBuscarCoche"><i class="bi bi-search me-2"></i>Buscar un coche</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuListarCoche"><i class="bi bi-list-ul me-2"></i>Listado de coches</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuFiltrarCoche"><i class="bi bi-funnel me-2"></i>Listado filtrado de coches</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-calendar-check"></i> Reservas
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" id="mnuAltaReserva"><i class="bi bi-plus-circle me-2"></i>Alta de reservas</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="mnuBuscarReserva"><i class="bi bi-search me-2"></i>Buscar una reserva</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuListarReserva"><i class="bi bi-list-ul me-2"></i>Listado de reservas</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuFiltrarReserva"><i class="bi bi-funnel me-2"></i>Listado filtrado de reservas</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-wrench-adjustable"></i> Servicios
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" id="mnuAltaServicio"><i class="bi bi-plus-circle me-2"></i>Alta de servicios</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" id="mnuBuscarServicio"><i class="bi bi-search me-2"></i>Buscar un servicio</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuListarServicio"><i class="bi bi-list-ul me-2"></i>Listado de servicios</a></li>
+              <li><a class="dropdown-item" href="#" id="mnuFiltrarServicio"><i class="bi bi-funnel me-2"></i>Listado filtrado de servicios</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <a class="btn btn-secondary ms-lg-3 d-none d-lg-inline-block" href="#" id="btnNuevaReserva">Nueva reserva</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================= CONTENIDO (SPA) ======================= -->
+  <main class="container py-4">
+
+    <!-- Inicio: panel con contadores y próximas reservas -->
+    <section id="vistaInicio">
+      <h1 class="h2 text-primary mb-4"><i class="bi bi-house-fill me-2"></i>Panel de gestión</h1>
+      <div id="contenidoInicio"></div>
+    </section>
+
+    <!-- ======================= CLIENTES ======================= -->
+
+    <!-- Alta / edición de cliente -->
+    <div id="vistaAltaCliente" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-person-plus" id="iconoTituloCliente" aria-hidden="true"></i>
+        <span id="tituloFormularioCliente">Alta de cliente</span>
+      </h2>
+
+      <form name="frmAltaCliente" id="frmAltaCliente" autocomplete="off">
+        <input type="hidden" id="id_cliente">
+
+        <div class="card mb-4">
+          <div class="card-header fw-semibold">
+            <i class="bi bi-person-fill me-1" aria-hidden="true"></i>
+            Datos del cliente
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtNombreCliente">Nombre completo</label>
+                <input id="txtNombreCliente" name="txtNombreCliente" class="form-control" type="text" maxlength="150" placeholder="Nombre y apellidos" required>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtTelefonoCliente">Teléfono</label>
+                <input id="txtTelefonoCliente" name="txtTelefonoCliente" class="form-control" type="tel" maxlength="20" placeholder="Ej: 600123456">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtEmailCliente">Email</label>
+                <input id="txtEmailCliente" name="txtEmailCliente" class="form-control" type="email" maxlength="150" placeholder="correo@ejemplo.com" required>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="lstCodigoPostal">Código postal</label>
+                <select name="lstCodigoPostal" id="lstCodigoPostal" class="form-select" required>
+                  <option value="">-- Seleccione código postal --</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+          <div class="col-12 col-md-auto">
+            <button type="submit" id="btnAceptarAltaCliente" name="btnAceptarAltaCliente"
+                    class="btn btn-secondary btn-lg btn-hero px-4 fw-semibold w-100">
+              <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+              <span>Aceptar</span>
+            </button>
+          </div>
+          <div class="col-12 col-md-auto" id="colReiniciarCliente">
+            <button type="reset" id="btnReiniciarCliente"
+                    class="btn btn-outline-danger btn-lg btn-hero px-4 fw-semibold w-100">
+              <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
+              Reiniciar
+            </button>
+          </div>
+          <div class="col-12 col-md-auto d-none" id="colCancelarCliente">
+            <button type="button" id="btnCancelarCliente"
+                    class="btn btn-outline-danger btn-lg btn-hero px-4 fw-semibold w-100">
+              <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Buscar cliente -->
+    <div id="vistaBuscarCliente" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span>Buscar cliente</span>
+      </h2>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <form name="frmBuscarCliente" id="frmBuscarCliente">
+            <div class="input-group input-group-lg">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input id="txtBuscarCliente" name="txtBuscarCliente" class="form-control" type="text"
+                     placeholder="Nombre del cliente (o parte del nombre)...">
+              <button type="submit" id="btnBuscarCliente" class="btn btn-secondary px-4 fw-semibold">Buscar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Listado de clientes (la tabla se pinta en #resultadosClientes) -->
+    <div id="vistaListarCliente" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-people-fill" aria-hidden="true"></i>
+        <span>Listado de clientes</span>
+      </h2>
+    </div>
+
+    <!-- Listado filtrado de clientes -->
+    <div id="vistaFiltrarCliente" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-funnel" aria-hidden="true"></i>
+        <span>Listado filtrado de clientes</span>
+      </h2>
+
+      <form name="frmFiltroClientes" id="frmFiltroClientes">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="txtNombreFiltro">Nombre</label>
+                <input id="txtNombreFiltro" name="txtNombreFiltro" class="form-control" type="text" maxlength="150"
+                       placeholder="Nombre (o parte del nombre)">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="txtEmailFiltro">Email</label>
+                <input id="txtEmailFiltro" name="txtEmailFiltro" class="form-control" type="text" maxlength="150"
+                       placeholder="Email (o parte del email)">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="lstCpFiltro">Código postal</label>
+                <select name="lstCpFiltro" id="lstCpFiltro" class="form-select">
+                  <option value="">-- Todos los códigos postales --</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+          <div class="col-12 col-md-auto">
+            <button type="submit" id="btnFiltrarCliente" name="btnFiltrarCliente" class="btn btn-secondary btn-lg px-4 fw-semibold w-100">
+              <i class="bi bi-funnel me-1" aria-hidden="true"></i>
+              Filtrar
+            </button>
+          </div>
+          <div class="col-12 col-md-auto">
+            <button type="reset" id="btnLimpiarFiltroCliente" class="btn btn-outline-danger btn-lg px-4 fw-semibold w-100">
+              <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Resultados de listar / buscar / filtrar clientes -->
+    <div id="resultadosClientes"></div>
+
+    <!-- ======================= COCHES ======================= -->
+
+    <!-- Alta / edición de coche -->
+    <div id="vistaAltaCoche" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-car-front" id="iconoTituloCoche" aria-hidden="true"></i>
+        <span id="tituloFormularioCoche">Alta de coche</span>
+      </h2>
+
+      <form name="frmAltaCoche" id="frmAltaCoche" autocomplete="off">
+        <input type="hidden" id="id_coche">
+
+        <div class="card mb-4">
+          <div class="card-header fw-semibold">
+            <i class="bi bi-car-front me-1" aria-hidden="true"></i>
+            Datos del vehículo
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtMatricula">Matrícula</label>
+                <input id="txtMatricula" name="txtMatricula" class="form-control" type="text" maxlength="15" placeholder="Ej: 1234ABC" required>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtAnio">Año</label>
+                <input id="txtAnio" name="txtAnio" class="form-control campo-anio" type="number" min="1900" placeholder="Año de matriculación" required>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtMarca">Marca</label>
+                <input id="txtMarca" name="txtMarca" class="form-control" type="text" maxlength="100" placeholder="Marca del coche" required>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="txtModelo">Modelo</label>
+                <input id="txtModelo" name="txtModelo" class="form-control" type="text" maxlength="100" placeholder="Modelo del coche" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header fw-semibold">
+            <i class="bi bi-wrench-adjustable me-1" aria-hidden="true"></i>
+            Entrada en el taller
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="txtFechaEntrada">Fecha de entrada</label>
+                <input id="txtFechaEntrada" name="txtFechaEntrada" class="form-control" type="date" required>
+              </div>
+              <div class="col-12 col-md-8">
+                <label class="form-label" for="lstClienteCoche">Cliente</label>
+                <select name="lstClienteCoche" id="lstClienteCoche" class="form-select" required>
+                  <option value="">-- Seleccione cliente --</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="chkReparar" id="chkReparar" value="1">
+                  <label class="form-check-label" for="chkReparar">
+                    Hay que repararlo
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+          <div class="col-12 col-md-auto">
+            <button type="submit" id="btnAceptarAltaCoche" name="btnAceptarAltaCoche"
+                    class="btn btn-secondary btn-lg btn-hero px-4 fw-semibold w-100">
+              <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+              <span>Aceptar</span>
+            </button>
+          </div>
+          <div class="col-12 col-md-auto" id="colReiniciarCoche">
+            <button type="reset" id="btnReiniciarCoche"
+                    class="btn btn-outline-danger btn-lg btn-hero px-4 fw-semibold w-100">
+              <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
+              Reiniciar
+            </button>
+          </div>
+          <div class="col-12 col-md-auto d-none" id="colCancelarCoche">
+            <button type="button" id="btnCancelarCoche"
+                    class="btn btn-outline-danger btn-lg btn-hero px-4 fw-semibold w-100">
+              <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Buscar coche -->
+    <div id="vistaBuscarCoche" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <span>Buscar coche</span>
+      </h2>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <form name="frmBuscarCoche" id="frmBuscarCoche">
+            <div class="input-group input-group-lg">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input id="txtBuscarCoche" name="txtBuscarCoche" class="form-control" type="text"
+                     placeholder="Matrícula, marca, modelo o cliente...">
+              <button type="submit" id="btnBuscarCoche" class="btn btn-secondary px-4 fw-semibold">Buscar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Listado de coches (la tabla se pinta en #resultadosCoches) -->
+    <div id="vistaListarCoche" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-car-front" aria-hidden="true"></i>
+        <span>Listado de coches</span>
+      </h2>
+    </div>
+
+    <!-- Listado filtrado de coches -->
+    <div id="vistaFiltrarCoche" class="d-none">
+      <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-funnel" aria-hidden="true"></i>
+        <span>Listado filtrado de coches</span>
+      </h2>
+
+      <form name="frmFiltroCoches" id="frmFiltroCoches">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="txtMarcaFiltro">Marca</label>
+                <input id="txtMarcaFiltro" name="txtMarcaFiltro" class="form-control" type="text" maxlength="100"
+                       placeholder="Marca (o parte de la marca)">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="lstClienteFiltro">Cliente</label>
+                <select name="lstClienteFiltro" id="lstClienteFiltro" class="form-select">
+                  <option value="">-- Todos los clientes --</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label" for="lstRepararFiltro">¿Hay que repararlo?</label>
+                <select name="lstRepararFiltro" id="lstRepararFiltro" class="form-select">
+                  <option value="">-- Todos --</option>
+                  <option value="1">Sí</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-4">
+                <label class="form-label" for="txtAnioMin">Año desde</label>
+                <input id="txtAnioMin" name="txtAnioMin" class="form-control campo-anio" type="number" min="1900" placeholder="Año mínimo">
+              </div>
+              <div class="col-6 col-md-4">
+                <label class="form-label" for="txtAnioMax">Año hasta</label>
+                <input id="txtAnioMax" name="txtAnioMax" class="form-control campo-anio" type="number" min="1900" placeholder="Año máximo">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+          <div class="col-12 col-md-auto">
+            <button type="submit" id="btnFiltrarCoche" name="btnFiltrarCoche" class="btn btn-secondary btn-lg px-4 fw-semibold w-100">
+              <i class="bi bi-funnel me-1" aria-hidden="true"></i>
+              Filtrar
+            </button>
+          </div>
+          <div class="col-12 col-md-auto">
+            <button type="reset" id="btnLimpiarFiltroCoche" class="btn btn-outline-danger btn-lg px-4 fw-semibold w-100">
+              <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Resultados de listar / buscar / filtrar coches -->
+    <div id="resultadosCoches"></div>
+
+    <!-- Alta / modificación de servicio -->
+    <form id="frmAltaServicio" class="card shadow-sm border-0 d-none" autocomplete="off">
+      <div class="card-body">
+        <h2 class="text-primary mb-4"><i class="bi bi-wrench-adjustable me-2"></i><span>Alta de servicio</span></h2>
+        <input type="hidden" id="id_servicio_alta_servicio">
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="fecha_alta_servicio" class="form-label">Fecha</label>
+            <input type="date" class="form-control" id="fecha_alta_servicio" required>
+          </div>
+          <div class="col-md-6">
+            <label for="id_reserva_asociada_alta_servicio" class="form-label">Reserva asociada</label>
+            <select class="form-select" id="id_reserva_asociada_alta_servicio" required></select>
+          </div>
+          <div class="col-12">
+            <label for="descripcion_alta_servicio" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion_alta_servicio" rows="3" required></textarea>
+          </div>
+          <div class="col-md-4">
+            <label for="tiempo_estimado_alta_servicio" class="form-label">Tiempo estimado (min)</label>
+            <input type="number" class="form-control" id="tiempo_estimado_alta_servicio" min="1" required>
+          </div>
+          <div class="col-md-4">
+            <label for="precio_base_alta_servicio" class="form-label">Precio base (€)</label>
+            <input type="number" class="form-control" id="precio_base_alta_servicio" min="0" step="0.01" required>
+          </div>
+          <div class="col-md-4">
+            <label for="garantia_alta_servicio" class="form-label">Garantía</label>
+            <input type="text" class="form-control" id="garantia_alta_servicio" maxlength="100">
+          </div>
+          <div class="col-md-8">
+            <label for="imagen_alta_servicio" class="form-label">Imagen</label>
+            <input type="file" class="form-control" id="imagen_alta_servicio" accept="image/*">
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="terminada_alta_servicio">
+              <label class="form-check-label" for="terminada_alta_servicio">Terminada</label>
+            </div>
+          </div>
+          <div class="col-12 d-none" id="contenedorImagenActualAltaServicio">
+            <div class="form-text mb-1">Imagen actual (si no eliges otra, se mantiene):</div>
+            <img id="imgActualAltaServicio" class="previsualizacion" alt="Imagen actual del servicio">
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <button type="submit" class="btn btn-primary" id="btnGuardarServicioAltaServicio"><i class="bi bi-check-lg me-1"></i> Guardar</button>
+          <button type="reset" class="btn btn-outline-secondary" name="btnLimpiarServicioAltaServicio" id="btnLimpiarServicioAltaServicio"><i class="bi bi-eraser me-1"></i> Limpiar</button>
+          <button type="button" class="btn btn-outline-danger" name="btnCancelarServicioAltaServicio" id="btnCancelarServicioAltaServicio"><i class="bi bi-x-lg me-1"></i> Cancelar</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Buscar servicio -->
+    <form id="frmBuscarServicio" class="card shadow-sm border-0 d-none">
+      <div class="card-body">
+        <h2 class="text-primary mb-4"><i class="bi bi-search me-2"></i>Buscar un servicio</h2>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-9">
+            <label for="id_servicio_busqueda_servicio" class="form-label">Servicio</label>
+            <select class="form-select" id="id_servicio_busqueda_servicio" required></select>
+          </div>
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-1"></i> Buscar</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Listado de servicios -->
+    <section id="vistaListarServicio" class="d-none">
+      <h2 class="text-primary mb-3"><i class="bi bi-list-ul me-2"></i>Listado de servicios</h2>
+    </section>
+
+    <!-- Listado filtrado de servicios -->
+    <form id="frmFiltrarServicio" class="card shadow-sm border-0 d-none">
+      <div class="card-body">
+        <h2 class="text-primary mb-4"><i class="bi bi-funnel me-2"></i>Listado filtrado de servicios</h2>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="id_reserva_filtro_servicios" class="form-label">Reserva</label>
+            <select class="form-select" id="id_reserva_filtro_servicios"></select>
+          </div>
+          <div class="col-md-6">
+            <label for="terminada_filtrar" class="form-label">Estado</label>
+            <select class="form-select" id="terminada_filtrar">
+              <option value="">-- Todos --</option>
+              <option value="1">Completado</option>
+              <option value="0">Pendiente</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="fecha_desde_filtro_servicio" class="form-label">Fecha desde</label>
+            <input type="date" class="form-control" id="fecha_desde_filtro_servicio">
+          </div>
+          <div class="col-md-6">
+            <label for="fecha_hasta_filtro_servicio" class="form-label">Fecha hasta</label>
+            <input type="date" class="form-control" id="fecha_hasta_filtro_servicio">
+          </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i> Filtrar</button>
+          <button type="reset" class="btn btn-outline-secondary" name="btn_limpiar_filtrar_servicios" id="btn_limpiar_filtrar_servicios"><i class="bi bi-eraser me-1"></i> Limpiar</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Resultados de buscar / listar / filtrar servicios -->
+    <div id="resultadosServicios"></div>
+  </main>
+
+  <footer class="bg-dark text-light pt-4 pb-3 mt-auto">
+    <div class="container">
+      <div class="row gy-3 align-items-center">
+        <div class="col-12 col-md-6 text-center text-md-start">
+          <img src="img/logo/logo.webp" alt="Talleres Moises" height="60" class="me-2 rounded-3">
+          <span class="small">Panel interno · Mecánica · Reparación</span>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-end small">
+          <i class="bi bi-telephone-fill text-warning"></i> 600 000 000 ·
+          <i class="bi bi-envelope-fill text-warning"></i> info@talleresmoises.es
+        </div>
+      </div>
+      <hr class="border-secondary">
+      <p class="text-center small mb-0">&copy; 2026 Talleres Moises · Uso exclusivo del personal del taller</p>
+    </div>
+  </footer>
+
+  <!-- ======================= MODAL DE CONFIRMACIÓN DE BORRADO ======================= -->
+  <div class="modal fade" id="modalConfirmarBorrar" tabindex="-1" aria-labelledby="tituloModalBorrar" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="tituloModalBorrar"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar borrado</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" id="mensajeModalBorrar">¿Seguro que deseas eliminar este registro?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="btnConfirmarBorrarDefinitivo">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= TOAST DE NOTIFICACIONES ======================= -->
+  <div class="toast-container position-fixed top-0 end-0 p-3 toast-taller-contenedor">
+    <div id="toastNotificacion" class="toast toast-taller toast-exito" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+      <div class="toast-header toast-taller-cabecera">
+        <img src="img/logo/logo.webp" alt="Talleres Moises" class="toast-taller-logo me-2">
+        <strong class="me-auto" id="toastTitulo">Operación correcta</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+      <div class="toast-body d-flex align-items-start gap-2">
+        <i class="bi bi-check-circle-fill fs-4 toast-taller-icono" id="toastIcono" aria-hidden="true"></i>
+        <div id="toastMensaje" class="pt-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Los scripts van al final para que los elementos ya existan cuando se registran los eventos -->
+  <script src="js/ajax.js"></script>
+  <script src="js/objetos.js"></script>
+  <script src="js/codigo.js"></script>
+</body>
+</html>
