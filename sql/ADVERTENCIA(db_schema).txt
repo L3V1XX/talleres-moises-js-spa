@@ -1,7 +1,0 @@
-Como algunos no habéis terminado vuestras tablas para la base de datos para la tarea de HLC,
-aquí el esquema se va a llamar talleres_moises_js_spa (tarea de DINT),
-NO talleres_moises (este último es el de la tarea de HLC).
-
-Parece una tontería, pero al no tenerlo terminado y empezar ya este repo,
-cualquier cosita que quede distinta puede liarla, así que he preferido
-compartimentar dado es la única solución que veo para poder empezar ya con JS.
