@@ -15,9 +15,6 @@ var cochesMostrados = [];
 registrarEventos();
 mostrarInicio();
 
-// =============================================================================
-// 2. REGISTRO DE EVENTOS
-// =============================================================================
 function registrarEventos() {
   // Inicio (logo y opción del menú)
   document.querySelector("#mnuInicio").addEventListener("click", mostrarInicio);
@@ -106,9 +103,6 @@ function registrarEventos() {
   }
 }
 
-// =============================================================================
-// 3. MOSTRAR FORMULARIO (según la opción de menú pulsada)
-// =============================================================================
 function mostrarFormulario(oEvento) {
   oEvento.preventDefault();
   let opcionMenu = oEvento.currentTarget.id;
@@ -159,9 +153,6 @@ function mostrarFormulario(oEvento) {
   }
 }
 
-// =============================================================================
-// 4. OCULTAR FORMULARIOS (poner "d-none" a todas las vistas antes de mostrar una)
-// =============================================================================
 function ocultarFormularios() {
   vistaInicio.classList.add("d-none");
 
@@ -184,10 +175,6 @@ function ocultarFormularios() {
   document.querySelector("#resultadosServicios").innerHTML = "";
 }
 
-// =============================================================================
-// 5. FUNCIONES COMPARTIDAS (no las modifiques sin avisar al grupo)
-// =============================================================================
-
 // Escapa texto antes de meterlo en innerHTML
 function esc(texto) {
   const d = document.createElement("div");
@@ -199,13 +186,11 @@ function mostrarInicio(oEvento) {
   if (oEvento) oEvento.preventDefault();
   ocultarFormularios();
   vistaInicio.classList.remove("d-none");
-  // TODO (grupo): pintar el panel de inicio (contadores y próximas reservas) con oEmpresa.getPanel()
 }
 
 // El mismo botón del modal sirve para confirmar el borrado de cualquier entidad.
 // Cada compañero añade aquí su "if (idXxxPendienteBorrar) return ejecutarBorradoXxx();"
 function ejecutarBorrado() {
-  // >>> CLIENTES (Javier): if (idClientePendienteBorrar) return ejecutarBorradoCliente();
   if (idCochePendienteBorrar) {
     return ejecutarBorradoCoche();
   }
