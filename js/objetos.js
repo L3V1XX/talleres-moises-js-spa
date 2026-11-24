@@ -1,225 +1,143 @@
 "use strict";
 
-// =================== EJEMPLO DEL PROFEDOR CON TIENDA COMPONENTES ===================
+class Coche {
+    #id;
+    #matricula;
+    #marca;
+    #modelo;
+    #anio;
+    #fecha_entrada;
+    #reparar;
+    #id_cliente;
 
-// class Tipo {
-//   #idtipo;
-//   #tipo;
-//   #descripcion;
-//   constructor(idtipo, tipo, descripcion) {
-//     this.#idtipo = idtipo;
-//     this.#tipo = tipo;
-//     this.#descripcion = descripcion;
-//   }
-//   get idtipo() {
-//     return this.#idtipo;
-//   }
-//   get tipo() {
-//     return this.#tipo;
-//   }
-//   get descripcion() {
-//     return this.#descripcion;
-//   }
-//   set idtipo(idtipo) {
-//     this.#idtipo = idtipo;
-//   }
-//   set tipo(tipo) {
-//     this.#tipo = tipo;
-//   }
-//   set descripcion(descripcion) {
-//     this.#descripcion = descripcion;
-//   }
+    constructor(id, matricula, marca, modelo, anio, fecha_entrada, reparar, id_cliente) {
+        this.#id = id;
+        this.#matricula = matricula;
+        this.#marca = marca;
+        this.#modelo = modelo;
+        this.#anio = anio;
+        this.#fecha_entrada = fecha_entrada;
+        this.#reparar = reparar;
+        this.#id_cliente = id_cliente;
+    }
+    get id() {
+        return this.#id;
+    }
+    get matricula() {
+        return this.#matricula;
+    }
+    get marca() {
+        return this.#marca;
+    }
+    get modelo() {
+        return this.#modelo;
+    }
+    get anio() {
+        return this.#anio;
+    }
+    get fecha_entrada() {
+        return this.#fecha_entrada;
+    }
+    get reparar() {
+        return this.#reparar;
+    }
+    get id_cliente() {
+        return this.#id_cliente;
+    }
+    set id(id) {
+        this.#id = id;
+    }
+    set matricula(matricula) {
+        this.#matricula = matricula;
+    }
+    set marca(marca) {
+        this.#marca = marca;
+    }
+    set modelo(modelo) {
+        this.#modelo = modelo;
+    }
+    set anio(anio) {
+        this.#anio = anio;
+    }
+    set fecha_entrada(fecha_entrada) {
+        this.#fecha_entrada = fecha_entrada;
+    }
+    set reparar(reparar) {
+        this.#reparar = reparar;
+    }
+    set id_cliente(id_cliente) {
+        this.#id_cliente = id_cliente;
+    }
 
-//   toJSON() {
-//     let oTipo = {
-//       idtipo: this.#idtipo,
-//       tipo: this.#tipo,
-//       descripcion: this.#descripcion,
-//     };
-//     return oTipo;
-//   }
-// }
+    toJSON() {
+        return {
+            id: this.#id,
+            matricula: this.#matricula,
+            marca: this.#marca,
+            modelo: this.#modelo,
+            anio: this.#anio,
+            fecha_entrada: this.#fecha_entrada,
+            reparar: this.#reparar,
+            id_cliente: this.#id_cliente
+        };
+    }
+}
 
-// class Componente {
-//   #idcomponente;
-//   #nombre;
-//   #descripcion;
-//   #precio;
-//   #idtipo;
-//   constructor(idcomponente, nombre, descripcion, precio, idtipo) {
-//     this.#idcomponente = idcomponente;
-//     this.#nombre = nombre;
-//     this.#descripcion = descripcion;
-//     this.#precio = precio;
-//     this.#idtipo = idtipo;
-//   }
-//   get idcomponente() {
-//     return this.#idcomponente;
-//   }
-//   get nombre() {
-//     return this.#nombre;
-//   }
-//   get descripcion() {
-//     return this.#descripcion;
-//   }
-//   get precio() {
-//     return this.#precio;
-//   }
-//   get idtipo() {
-//     return this.#idtipo;
-//   }
-//   set idcomponente(idcomponente) {
-//     this.#idcomponente = idcomponente;
-//   }
-//   set nombre(nombre) {
-//     this.#nombre = nombre;
-//   }
-//   set descripcion(descripcion) {
-//     this.#descripcion = descripcion;
-//   }
-//   set precio(precio) {
-//     this.#precio = precio;
-//   }
-//   set idtipo(idtipo) {
-//     this.#idtipo = idtipo;
-//   }
+//--------------Coches--------------
+class Empresa {
+    async altaCoche(oCoche) {
+        let datos = new FormData();
 
-//   toJSON() {
-//     let oComponente = {
-//       idcomponente: this.#idcomponente,
-//       nombre: this.#nombre,
-//       descripcion: this.#descripcion,
-//       precio: this.#precio,
-//       idtipo: this.#idtipo,
-//     };
-//     return oComponente;
-//   }
-// }
+        datos.append("coche", JSON.stringify(oCoche));
 
-// class Empresa {
-//   async altaTipo(oTipo) {
-//     let datos = new FormData();
+        return await peticionPOST("alta_coche.php", datos);
+    }
 
-//     datos.append("tipo", oTipo.tipo);
-//     datos.append("descripcion", oTipo.descripcion);
+    async modificarCoche(oCoche) {
+        let datos = new FormData();
 
-//     let respuesta = await peticionPOST("alta_tipo.php", datos);
+        datos.append("coche", JSON.stringify(oCoche));
 
-//     return respuesta;
-//   }
+        return await peticionPOST("modificar_coche.php", datos);
+    }
 
-//   async modificarComponente(oComponente) {
-//     let datos = new FormData();
+    async borrarCoche(idCoche) {
+        let datos = new FormData();
 
-//     // Se podría pasar campo a campo al servidor
-//     // pero en esta ocasión vamos a pasar todos los datos
-//     // en un solo parámetro cuyos datos van en formato JSON
-//     datos.append("componente", JSON.stringify(oComponente));
+        datos.append("id", idCoche);
 
-//     let respuesta = await peticionPOST("modificar_componente.php", datos);
+        return await peticionPOST("borrar_coche.php", datos);
+    }
 
-//     return respuesta;
-//   }
+    async buscarCoche(texto) {
+        let datos = new FormData();
 
-//   async altaComponente(oComponente) {
-//     let datos = new FormData();
+        datos.append("texto", texto);
 
-//     // Se podría pasar campo a campo al servidor
-//     // pero en esta ocasión vamos a pasar todos los datos
-//     // en un solo parámetro cuyos datos van en formato JSON
-//     datos.append("componente", JSON.stringify(oComponente));
+        return await peticionPOST("buscar_coche.php", datos);
+    }
 
-//     let respuesta = await peticionPOST("alta_componente.php", datos);
+    async listadoCoche() {
+        return await peticionGET("get_coches.php");
+    }
 
-//     return respuesta;
-//   }
+    async filtrarCoche(marca, idCliente, reparar, anioMin, anioMax) {
+        let datos = new FormData();
 
-//   async getTipos() {
-//     let datos = new FormData();
+        datos.append("marca", marca);
+        datos.append("id_cliente", idCliente);
+        datos.append("reparar", reparar);
+        datos.append("anio_min", anioMin);
+        datos.append("anio_max", anioMax);
 
-//     let respuesta = await peticionGET("get_tipos.php", datos);
+        return await peticionPOST("filtrar_coches.php", datos);
+    }
 
-//     return respuesta;
-//   }
+    async getCoches() {
+        return await peticionGET("get_coches.php");
+    }
 
-//   async buscarComponente(idComponente) {
-//     let datos = new FormData();
-
-//     datos.append("idcomponente", idComponente);
-
-//     let respuesta = await peticionPOST("buscar_componente.php", datos);
-
-//     return respuesta;
-//   }
-
-//   async borrarComponente(idComponente) {
-//     let datos = new FormData();
-
-//     datos.append("idcomponente", idComponente);
-
-//     let respuesta = await peticionPOST("borrar_componente.php", datos);
-
-//     return respuesta;
-//   }
-
-//   async listadoTipoComponentes() {
-//     let listado = "";
-
-//     let respuesta = await peticionGET("get_tipos.php", new FormData());
-
-//     if (!respuesta.ok) {
-//       listado = respuesta.mensaje;
-//     } else {
-//       listado = "<table class='table table-striped'>";
-//       listado +=
-//         "<thead><tr><th>IDTIPO</th><th>TIPO</th><th>DESCRIPCIÓN</th></tr></thead>";
-//       listado += "<tbody>";
-
-//       for (let tipo of respuesta.datos) {
-//         listado += "<tr><td>" + tipo.idtipo + "</td>";
-//         listado += "<td>" + tipo.tipo + "</td>";
-//         listado += "<td>" + tipo.descripcion + "</td></tr>";
-//       }
-//       listado += "</tbody></table>";
-//     }
-
-//     return listado;
-//   }
-
-//   async listadoPorTipo(idTipo) {
-//     let datos = new FormData();
-
-//     datos.append("idtipo", idTipo);
-
-//     let respuesta = await peticionGET("get_componentes_por_tipo.php", datos);
-
-//     return respuesta;
-//   }
-
-//   async listadoComponentes() {
-//     let datos = new FormData();
-
-//     let respuesta = await peticionGET("get_componentes.php", datos);
-
-//     return respuesta;
-//   }
-
-//   async listadoPorPrecio(precioMin, precioMax) {
-//     let datos = new FormData();
-//     datos.append("precioMin", precioMin);
-//     datos.append("precioMax", precioMax);
-
-//     let respuesta = await peticionGET("get_componentes_precio.php", datos);
-
-//     return respuesta;
-//   }
-
-//   async buscarTipoPorNombre(nombreTipo){
-//     let datos = new FormData();
-//     datos.append("nombre", nombreTipo);
-
-//     let respuesta = await peticionGET("get_tipo_componentes_nombre.php", datos);
-
-//     return respuesta;
-//   }
-// }
+    async getClientes() {
+        return await peticionGET("get_clientes.php");
+    }
+}
