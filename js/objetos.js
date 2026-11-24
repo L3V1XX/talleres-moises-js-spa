@@ -229,6 +229,10 @@ class Empresa {
         return await peticionGET("get_coches.php");
     }
 
+    async getPanel() {
+        return await peticionGET("get_panel.php");
+    }
+
     async getClientes() {
         return await peticionGET("get_clientes.php");
     }
