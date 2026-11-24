@@ -20,6 +20,11 @@ function registrarEventos() {
   document.querySelector("#mnuInicio").addEventListener("click", mostrarInicio);
   document.querySelector("#mnuLogo").addEventListener("click", mostrarInicio);
 
+  // Tarjetas del panel: abren el listado de su entidad (delegación de eventos)
+  document
+    .querySelector("#contenidoInicio")
+    .addEventListener("click", procesarClickInicio);
+
   // >>> CLIENTES (Javier): eventos del menú (#mnu...Cliente) y de sus formularios/botones aquí
 
   // >>> COCHES
@@ -127,10 +132,123 @@ function esc(texto) {
   return d.innerHTML;
 }
 
+// Tarjetas del panel: clave del JSON, título, icono y opción de menú que abre
+const TARJETAS_INICIO = [
+  {
+    clave: "clientes",
+    titulo: "Clientes",
+    icono: "bi-people-fill",
+    menu: "mnuListarCliente",
+  },
+  {
+    clave: "coches",
+    titulo: "Coches",
+    icono: "bi-car-front-fill",
+    menu: "mnuListarCoche",
+  },
+  {
+    clave: "reservas",
+    titulo: "Reservas",
+    icono: "bi-calendar-check",
+    menu: "mnuListarReserva",
+  },
+  {
+    clave: "servicios",
+    titulo: "Servicios",
+    icono: "bi-wrench-adjustable",
+    menu: "mnuListarServicio",
+  },
+];
+
 function mostrarInicio(oEvento) {
   if (oEvento) oEvento.preventDefault();
   ocultarFormularios();
   vistaInicio.classList.remove("d-none");
+  pintarInicio();
+}
+
+async function pintarInicio() {
+  const cont = document.querySelector("#contenidoInicio");
+  cont.innerHTML =
+    "<div class='text-center py-5'><div class='spinner-border text-primary'></div></div>";
+
+  let respuesta = await oEmpresa.getPanel();
+
+  if (!respuesta.ok) {
+    cont.innerHTML =
+      "<div class='alert alert-danger'>" + esc(respuesta.mensaje) + "</div>";
+    return;
+  }
+
+  const { cuentas, proximas } = respuesta.datos;
+
+  let html = "<div class='row row-cols-2 row-cols-lg-4 g-3 mb-4'>";
+  for (let t of TARJETAS_INICIO) {
+    html +=
+      "<div class='col'>" +
+      "<div class='card card-porque h-100 text-center shadow-sm border-0' role='button' data-menu='" +
+      t.menu +
+      "'>" +
+      "<div class='card-body'>" +
+      "<i class='bi " +
+      t.icono +
+      " display-5 text-primary'></i>" +
+      "<div class='display-6 fw-bold text-dark'>" +
+      (cuentas[t.clave] ?? 0) +
+      "</div>" +
+      "<div class='text-body-secondary'>" +
+      t.titulo +
+      "</div>" +
+      "</div></div></div>";
+  }
+  html += "</div>";
+
+  html +=
+    "<div class='card shadow-sm border-0'>" +
+    "<div class='card-header bg-primary text-white'><i class='bi bi-calendar-week me-2'></i>Próximas reservas</div>";
+
+  if (proximas.length === 0) {
+    html +=
+      "<div class='card-body'><div class='alert alert-info mb-0'>No hay reservas próximas.</div></div>";
+  } else {
+    html += "<ul class='list-group list-group-flush'>";
+    for (let p of proximas) {
+      let [a, m, d] = p.dia.split("-");
+      let franja =
+        p.franja_horaria === "MANANA"
+          ? "<span class='badge badge-manana'>Mañana</span>"
+          : "<span class='badge badge-tarde'>Tarde</span>";
+      html +=
+        "<li class='list-group-item py-3'>" +
+        "<i class='bi bi-calendar-day text-warning me-2'></i>" +
+        d +
+        "/" +
+        m +
+        "/" +
+        a +
+        " " +
+        franja +
+        " · <strong>" +
+        esc(p.matricula) +
+        "</strong> " +
+        esc(p.vehiculo) +
+        " <span class='text-body-secondary'>(" +
+        esc(p.cliente) +
+        ")</span></li>";
+    }
+    html += "</ul>";
+  }
+  html += "</div>";
+
+  cont.innerHTML = html;
+}
+
+// Clic en una tarjeta: simula el clic en la opción de menú correspondiente
+function procesarClickInicio(oEvento) {
+  const tarjeta = oEvento.target.closest("[data-menu]");
+  if (tarjeta) {
+    document.querySelector("#" + tarjeta.dataset.menu).click();
+  }
 }
 
 // El mismo botón del modal sirve para confirmar el borrado de cualquier entidad.
