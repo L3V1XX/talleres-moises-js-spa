@@ -44,14 +44,12 @@ function registrarEventos() {
   document
     .querySelector("#btnReiniciarCoche")
     .addEventListener("click", () => setTimeout(prepararAltaCoche, 0));
-  document
-    .querySelector("#btnCancelarCoche")
-    .addEventListener("click", () => {
-      resetearFormularioCoche();
-      ocultarFormularios();
-      vistaListarCoche.classList.remove("d-none");
-      procesarListadoCoches();
-    });
+  document.querySelector("#btnCancelarCoche").addEventListener("click", () => {
+    resetearFormularioCoche();
+    ocultarFormularios();
+    vistaListarCoche.classList.remove("d-none");
+    procesarListadoCoches();
+  });
   frmBuscarCoche.addEventListener("submit", procesarBuscarCoches);
   frmFiltroCoches.addEventListener("submit", procesarFiltrarCoches);
   frmFiltroCoches.addEventListener("reset", () => {
@@ -61,11 +59,46 @@ function registrarEventos() {
   // >>> RESERVAS (Carmen): eventos del menú (#mnu...Reserva) y de sus formularios/botones aquí
 
   // >>> SERVICIOS (Moises): eventos del menú (#mnu...Servicio) y de sus formularios/botones aquí
-
+  document
+    .querySelector("#mnuAltaServicio")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuBuscarServicio")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuListarServicio")
+    .addEventListener("click", mostrarFormulario);
+  document
+    .querySelector("#mnuFiltrarServicio")
+    .addEventListener("click", mostrarFormulario);
   // COMPARTIDO: confirmación de borrado en el modal de Bootstrap (un único botón para todos)
   document
     .querySelector("#btnConfirmarBorrarDefinitivo")
     .addEventListener("click", ejecutarBorrado);
+
+  frmAltaServicio.addEventListener("submit", procesarGuardarServicio);
+  frmAltaServicio.btnCancelarServicioAltaServicio.addEventListener(
+    "click",
+    cancelar,
+  );
+  frmAltaServicio.btnLimpiarServicioAltaServicio.addEventListener(
+    "click",
+    () => {
+      document
+        .querySelector("#contenedorImagenActualAltaServicio")
+        .classList.add("d-none");
+    },
+  );
+
+  frmBuscarServicio.addEventListener("submit", procesarBuscarServicios);
+  frmFiltrarServicio.addEventListener("submit", procesarFiltrarServicios);
+  frmFiltrarServicio.btn_limpiar_filtrar_servicios.addEventListener(
+    "click",
+    () => {
+      document.querySelector("#resultadosServicios").innerHTML = "";
+    },
+  );
+
 
   // COMPARTIDO: año máximo = año actual en los campos de año
   for (let campo of document.querySelectorAll(".campo-anio")) {
@@ -106,6 +139,23 @@ function mostrarFormulario(oEvento) {
     // >>> RESERVAS (Carmen): cases mnuAltaReserva, mnuBuscarReserva, mnuListarReserva, mnuFiltrarReserva
 
     // >>> SERVICIOS (Moises): cases mnuAltaServicio, mnuBuscarServicio, mnuListarServicio, mnuFiltrarServicio
+    case "mnuAltaServicio":
+      resetearFormularioServicio();
+      frmAltaServicio.classList.remove("d-none");
+      actualizarDesplegableReservas(undefined);
+      break;
+    case "mnuBuscarServicio":
+      frmBuscarServicio.classList.remove("d-none");
+      actualizarDesplegableServicios();
+      break;
+    case "mnuListarServicio":
+      vistaListarServicio.classList.remove("d-none");
+      procesarListadoServicios();
+      break;
+    case "mnuFiltrarServicio":
+      frmFiltrarServicio.classList.remove("d-none");
+      actualizarDesplegableServicios();
+      break;
   }
 }
 
@@ -127,6 +177,11 @@ function ocultarFormularios() {
   // >>> RESERVAS (Carmen): ocultar tus vistas y vaciar tus resultados
 
   // >>> SERVICIOS (Moises): ocultar tus vistas y vaciar #resultadosServicios
+  frmAltaServicio.classList.add("d-none");
+  frmBuscarServicio.classList.add("d-none");
+  vistaListarServicio.classList.add("d-none");
+  frmFiltrarServicio.classList.add("d-none");
+  document.querySelector("#resultadosServicios").innerHTML = "";
 }
 
 // =============================================================================
@@ -154,8 +209,13 @@ function ejecutarBorrado() {
   if (idCochePendienteBorrar) {
     return ejecutarBorradoCoche();
   }
+ 
   // >>> RESERVAS (Carmen): if (idReservaPendienteBorrar) return ejecutarBorradoReserva();
-  // >>> SERVICIOS (Moises): if (idServicioPendienteBorrar) return ejecutarBorradoServicio();
+
+  // >>> SERVICIOS (Moises)
+   if (idServicioPendienteBorrar) {
+    return ejecutarBorradoServicio();
+  }
 }
 
 function mostrarToast(mensaje, esExito = true) {
@@ -199,7 +259,11 @@ async function actualizarDesplegableClientes(idClienteSeleccionado) {
   if (respuesta.ok && Array.isArray(respuesta.datos)) {
     for (let cliente of respuesta.datos) {
       let opcion =
-        "<option value='" + cliente.id + "'%SEL%>" + esc(cliente.nombre_completo) + "</option>";
+        "<option value='" +
+        cliente.id +
+        "'%SEL%>" +
+        esc(cliente.nombre_completo) +
+        "</option>";
       let sel = idClienteSeleccionado == cliente.id ? " selected" : "";
       optionsAlta += opcion.replace("%SEL%", sel);
       optionsFiltro += opcion.replace("%SEL%", "");
@@ -225,7 +289,8 @@ function fechaHoy() {
 // Deja el formulario en modo "Alta" (sin limpiar los campos: eso lo hace reset)
 function prepararAltaCoche() {
   document.querySelector("#id_coche").value = "";
-  document.querySelector("#tituloFormularioCoche").textContent = "Alta de coche";
+  document.querySelector("#tituloFormularioCoche").textContent =
+    "Alta de coche";
   document.querySelector("#iconoTituloCoche").className = "bi bi-car-front";
   document.querySelector("#btnAceptarAltaCoche span").textContent = "Aceptar";
   document.querySelector("#colReiniciarCoche").classList.remove("d-none");
@@ -273,13 +338,27 @@ function pintarTablaCoches(datos, mensajeVacio, mostrarTotal) {
 
     html +=
       "<tr>" +
-      "<td class='fw-semibold'>" + esc(fila.matricula) + "</td>" +
-      "<td>" + esc(fila.marca) + "</td>" +
-      "<td>" + esc(fila.modelo) + "</td>" +
-      "<td>" + esc(String(fila.anio)) + "</td>" +
-      "<td>" + esc(fila.fecha_entrada) + "</td>" +
-      "<td>" + reparar + "</td>" +
-      "<td>" + cliente + "</td>" +
+      "<td class='fw-semibold'>" +
+      esc(fila.matricula) +
+      "</td>" +
+      "<td>" +
+      esc(fila.marca) +
+      "</td>" +
+      "<td>" +
+      esc(fila.modelo) +
+      "</td>" +
+      "<td>" +
+      esc(String(fila.anio)) +
+      "</td>" +
+      "<td>" +
+      esc(fila.fecha_entrada) +
+      "</td>" +
+      "<td>" +
+      reparar +
+      "</td>" +
+      "<td>" +
+      cliente +
+      "</td>" +
       "<td class='text-nowrap'>" +
       "<button type='button' class='btn btn-sm btn-outline-primary me-1 btn-editar-coche' data-id='" +
       fila.id +
@@ -302,14 +381,18 @@ function pintarTablaCoches(datos, mensajeVacio, mostrarTotal) {
 
 // Botón "Nuevo coche" bajo el listado
 function pieListadoCoches() {
-  document.querySelector("#resultadosCoches").insertAdjacentHTML(
-    "beforeend",
-    "<button type='button' class='btn btn-secondary px-4 fw-semibold mb-4' id='btnNuevoCoche'>" +
-      "<i class='bi bi-plus-lg me-1' aria-hidden='true'></i> Nuevo coche</button>",
-  );
+  document
+    .querySelector("#resultadosCoches")
+    .insertAdjacentHTML(
+      "beforeend",
+      "<button type='button' class='btn btn-secondary px-4 fw-semibold mb-4' id='btnNuevoCoche'>" +
+        "<i class='bi bi-plus-lg me-1' aria-hidden='true'></i> Nuevo coche</button>",
+    );
   document
     .querySelector("#btnNuevoCoche")
-    .addEventListener("click", () => document.querySelector("#mnuAltaCoche").click());
+    .addEventListener("click", () =>
+      document.querySelector("#mnuAltaCoche").click(),
+    );
 }
 
 async function procesarListadoCoches() {
@@ -375,7 +458,9 @@ function procesarAccionTablaCoches(oEvento) {
     idCochePendienteBorrar = btnEliminar.dataset.id;
 
     document.querySelector("#mensajeModalBorrar").textContent =
-      "¿Seguro que quieres borrar el coche " + btnEliminar.dataset.matricula + "?";
+      "¿Seguro que quieres borrar el coche " +
+      btnEliminar.dataset.matricula +
+      "?";
     bootstrap.Modal.getOrCreateInstance(
       document.querySelector("#modalConfirmarBorrar"),
     ).show();
@@ -408,7 +493,8 @@ async function cargarFormularioEdicionCoche(coche) {
 
   document.querySelector("#tituloFormularioCoche").textContent = "Editar coche";
   document.querySelector("#iconoTituloCoche").className = "bi bi-pencil-square";
-  document.querySelector("#btnAceptarAltaCoche span").textContent = "Guardar cambios";
+  document.querySelector("#btnAceptarAltaCoche span").textContent =
+    "Guardar cambios";
   document.querySelector("#colReiniciarCoche").classList.add("d-none");
   document.querySelector("#colCancelarCoche").classList.remove("d-none");
 
@@ -470,3 +556,349 @@ async function procesarGuardarCoche(oEvento) {
 //     Sugerido: pintarTablaServicios, procesarListadoServicios, procesarBuscarServicios,
 //     procesarFiltrarServicios, ejecutarBorradoServicio, procesarGuardarServicio...
 // =============================================================================
+
+async function actualizarDesplegableReservas(idReservaSeleccionado) {
+  let respuesta = await oEmpresa.getReservas();
+  let options =
+    "<option value='' disabled selected>-- Seleccione reserva --</option>";
+
+  if (respuesta.ok && Array.isArray(respuesta.datos)) {
+    for (let reserva of respuesta.datos) {
+      let idRes = reserva.id ?? reserva.id_reserva ?? reserva.idReserva;
+
+      let detalles = [];
+      for (let [clave, valor] of Object.entries(reserva)) {
+        if (
+          clave !== "id" &&
+          clave !== "id_reserva" &&
+          clave !== "idReserva" &&
+          valor !== null &&
+          valor !== ""
+        ) {
+          let etiqueta =
+            clave.charAt(0).toUpperCase() + clave.slice(1).replace(/_/g, " ");
+          detalles.push(`${etiqueta}: ${valor}`);
+        }
+      }
+
+      let texto =
+        `Reserva #${idRes}` +
+        (detalles.length > 0 ? " — " + detalles.join(" | ") : "");
+
+      let selected =
+        idReservaSeleccionado && idReservaSeleccionado == idRes
+          ? "selected"
+          : "";
+
+      options += `<option ${selected} value="${idRes}">${texto}</option>`;
+    }
+  } else if (idReservaSeleccionado) {
+    options += `<option selected value="${idReservaSeleccionado}">Reserva #${idReservaSeleccionado}</option>`;
+  }
+
+  frmAltaServicio.id_reserva_asociada_alta_servicio.innerHTML = options;
+}
+
+async function actualizarDesplegableServicios() {
+  // 1. Cargar servicios para el formulario Buscar
+  let respServicios = await oEmpresa.listadoServicio();
+  let optionsBusqueda =
+    "<option value='' selected disabled>-- Seleccione servicio --</option>";
+
+  if (respServicios.ok && Array.isArray(respServicios.datos)) {
+    for (let servicio of respServicios.datos) {
+      optionsBusqueda += `<option value="${servicio.id}">#${servicio.id} - ${servicio.descripcion} (${servicio.fecha})</option>`;
+    }
+  }
+  frmBuscarServicio.id_servicio_busqueda_servicio.innerHTML = optionsBusqueda;
+
+  // 2. Cargar reservas para el desplegable del formulario Filtrar
+  let respReservas = await oEmpresa.getReservas();
+  let optionsFiltro = "<option value=''>-- Todas las reservas --</option>";
+
+  if (respReservas.ok && Array.isArray(respReservas.datos)) {
+    for (let reserva of respReservas.datos) {
+      let idRes = reserva.id ?? reserva.id_reserva ?? reserva.idReserva;
+      let dia = reserva.dia ?? reserva.fecha ?? "";
+      let matricula = reserva.snapshot_coche_matricula ?? "";
+      optionsFiltro += `<option value="${idRes}">Reserva #${idRes}${dia ? " (" + dia + ")" : ""}${matricula ? " - " + matricula : ""}</option>`;
+    }
+  }
+  frmFiltrarServicio.id_reserva_filtro_servicios.innerHTML = optionsFiltro;
+}
+
+function pintarTablaServicios(datos) {
+  let listado =
+    "<div class='table-responsive mt-4'><table class='table table-striped align-middle' id='tablaListadoServicios'>";
+  listado +=
+    "<thead><tr>" +
+    "<th>ID</th>" +
+    "<th>FECHA</th>" +
+    "<th>DESCRIPCIÓN</th>" +
+    "<th>TIEMPO (MIN)</th>" +
+    "<th>GARANTÍA</th>" +
+    "<th>PRECIO BASE</th>" +
+    "<th>RESERVA</th>" +
+    "<th>TERMINADA</th>" +
+    "<th>IMAGEN</th>" +
+    "<th>ACCIONES</th>" +
+    "</tr></thead><tbody>";
+
+  for (let fila of datos) {
+    let estadoTexto = fila.terminada == 1 ? "Completado" : "Pendiente";
+    let imgHtml = fila.imagen
+      ? "<img src='img/servicios/" +
+        fila.imagen +
+        "' alt='Servicio' style='max-height: 50px;' class='img-thumbnail'>"
+      : "<span class='text-muted small'>Sin imagen</span>";
+    let jsonFila = JSON.stringify(fila).replace(/'/g, "&#39;");
+
+    listado += "<tr>";
+    listado += "<td>" + fila.id + "</td>";
+    listado += "<td>" + fila.fecha + "</td>";
+    listado += "<td>" + fila.descripcion + "</td>";
+    listado += "<td>" + fila.tiempo_estimado + "</td>";
+    listado += "<td>" + (fila.garantia ? fila.garantia : "-") + "</td>";
+    listado += "<td>" + fila.precio_base + " €</td>";
+    listado += "<td>" + fila.id_reserva + "</td>";
+    listado += "<td>" + estadoTexto + "</td>";
+    listado += "<td>" + imgHtml + "</td>";
+    listado +=
+      "<td class='text-nowrap'>" +
+      "<button type='button' class='btn btn-primary btn-sm me-1 btn-editar' data-servicio='" +
+      jsonFila +
+      "' title='Editar'><i class='bi bi-pencil-square'></i></button>" +
+      "<button type='button' class='btn btn-danger btn-sm btn-eliminar' data-id='" +
+      fila.id +
+      "' title='Eliminar'><i class='bi bi-trash'></i></button>" +
+      "</td>";
+    listado += "</tr>";
+  }
+
+  listado += "</tbody></table></div>";
+
+  document.querySelector("#resultadosServicios").innerHTML = listado;
+
+  document
+    .querySelector("#tablaListadoServicios")
+    .addEventListener("click", procesarAccionTablaServicios);
+}
+
+async function procesarListadoServicios() {
+  let respuesta = await oEmpresa.listadoServicio();
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosServicios").innerHTML =
+      "<div class='alert alert-warning mt-3'>" + respuesta.mensaje + "</div>";
+    return;
+  }
+
+  pintarTablaServicios(respuesta.datos);
+}
+
+async function procesarBuscarServicios(oEvento) {
+  oEvento.preventDefault();
+
+  let idServicio = frmBuscarServicio.id_servicio_busqueda_servicio.value;
+  if (!idServicio) {
+    mostrarToast("Seleccione un servicio para buscar.", false);
+    return;
+  }
+
+  let respuesta = await oEmpresa.buscarServicio(idServicio);
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosServicios").innerHTML =
+      "<div class='alert alert-warning mt-3'>" + respuesta.mensaje + "</div>";
+    return;
+  }
+
+  pintarTablaServicios(respuesta.datos);
+}
+
+async function procesarFiltrarServicios(oEvento) {
+  oEvento.preventDefault();
+
+  let idReserva = frmFiltrarServicio.id_reserva_filtro_servicios.value;
+  let fechaDesde = frmFiltrarServicio.fecha_desde_filtro_servicio.value;
+  let fechaHasta = frmFiltrarServicio.fecha_hasta_filtro_servicio.value;
+  let terminada = frmFiltrarServicio.terminada_filtrar.value;
+
+  let respuesta = await oEmpresa.filtrarServicio(
+    idReserva,
+    fechaDesde,
+    fechaHasta,
+    terminada,
+  );
+
+  if (!respuesta.ok) {
+    document.querySelector("#resultadosServicios").innerHTML =
+      "<div class='alert alert-warning mt-3'>" + respuesta.mensaje + "</div>";
+    return;
+  }
+
+  pintarTablaServicios(respuesta.datos);
+}
+
+async function procesarAccionTablaServicios(oEvento) {
+  let btnEditar = oEvento.target.closest(".btn-editar");
+  let btnEliminar = oEvento.target.closest(".btn-eliminar");
+
+  if (btnEditar) {
+    let servicio = JSON.parse(btnEditar.dataset.servicio);
+    cargarFormularioEdicionServicio(servicio);
+  } else if (btnEliminar) {
+    idServicioPendienteBorrar = btnEliminar.dataset.id;
+
+    const modalEl = document.querySelector("#modalConfirmarBorrar");
+    if (modalEl) {
+      document.querySelector("#mensajeModalBorrar").textContent =
+        "¿Estás seguro de que deseas eliminar el servicio #" +
+        idServicioPendienteBorrar +
+        "?";
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    } else if (
+      confirm(
+        "¿Estás seguro de que deseas eliminar el servicio #" +
+          idServicioPendienteBorrar +
+          "?",
+      )
+    ) {
+      await ejecutarBorradoServicio();
+    }
+  }
+}
+
+async function ejecutarBorradoServicio() {
+  if (!idServicioPendienteBorrar) return;
+
+  const modalEl = document.querySelector("#modalConfirmarBorrar");
+  if (modalEl) {
+    bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+  }
+
+  let respuesta = await oEmpresa.borrarServicio(idServicioPendienteBorrar);
+  idServicioPendienteBorrar = null;
+
+  mostrarToast(respuesta.mensaje, respuesta.ok);
+
+  if (respuesta.ok) {
+    ocultarFormularios();
+    vistaListarServicio.classList.remove("d-none");
+    procesarListadoServicios();
+  }
+}
+
+async function cargarFormularioEdicionServicio(servicio) {
+  ocultarFormularios();
+
+  frmAltaServicio.classList.remove("d-none");
+  frmAltaServicio.querySelector("h2 span").textContent =
+    "Modificar servicio #" + servicio.id;
+  document.querySelector("#btnGuardarServicioAltaServicio").innerHTML =
+    "<i class='bi bi-check-lg me-1'></i> Guardar cambios";
+
+  await actualizarDesplegableReservas(servicio.id_reserva);
+
+  document.querySelector("#id_servicio_alta_servicio").value = servicio.id;
+  document.querySelector("#precio_base_alta_servicio").value =
+    servicio.precio_base;
+  document.querySelector("#fecha_alta_servicio").value = servicio.fecha;
+  document.querySelector("#garantia_alta_servicio").value =
+    servicio.garantia ?? "";
+  document.querySelector("#descripcion_alta_servicio").value =
+    servicio.descripcion;
+  document.querySelector("#tiempo_estimado_alta_servicio").value =
+    servicio.tiempo_estimado;
+  document.querySelector("#terminada_alta_servicio").checked =
+    servicio.terminada == 1;
+  document.querySelector("#imagen_alta_servicio").value = "";
+
+  const contImg = document.querySelector("#contenedorImagenActualAltaServicio");
+  const imgActual = document.querySelector("#imgActualAltaServicio");
+  if (servicio.imagen) {
+    imgActual.src = "img/servicios/" + servicio.imagen;
+    contImg.classList.remove("d-none");
+  } else {
+    imgActual.src = "";
+    contImg.classList.add("d-none");
+  }
+}
+
+// Sirve tanto para Alta (id vacío) como para Edición (id con valor)
+async function procesarGuardarServicio(oEvento) {
+  oEvento.preventDefault();
+
+  let id = document.querySelector("#id_servicio_alta_servicio").value.trim();
+  let fecha = document.querySelector("#fecha_alta_servicio").value;
+  let descripcion = document
+    .querySelector("#descripcion_alta_servicio")
+    .value.trim();
+  let tiempo_estimado = parseInt(
+    document.querySelector("#tiempo_estimado_alta_servicio").value,
+  );
+  let garantia = document.querySelector("#garantia_alta_servicio").value.trim();
+  let precio_base = parseFloat(
+    document.querySelector("#precio_base_alta_servicio").value,
+  );
+  let id_reserva = parseInt(
+    document.querySelector("#id_reserva_asociada_alta_servicio").value,
+  );
+  let terminada = document.querySelector("#terminada_alta_servicio").checked
+    ? 1
+    : 0;
+
+  let inputImagen = document.querySelector("#imagen_alta_servicio");
+  let archivoImagen =
+    inputImagen.files.length > 0 ? inputImagen.files[0] : null;
+
+  let oServicio = new Servicio(
+    id !== "" ? parseInt(id) : null,
+    fecha,
+    descripcion,
+    tiempo_estimado,
+    garantia,
+    precio_base,
+    id_reserva,
+    terminada,
+    null,
+  );
+
+  let respuesta;
+  if (id !== "") {
+    respuesta = await oEmpresa.modificarServicio(oServicio, archivoImagen);
+  } else {
+    respuesta = await oEmpresa.altaServicio(oServicio, archivoImagen);
+  }
+
+  mostrarToast(respuesta.mensaje, respuesta.ok);
+
+  if (respuesta.ok) {
+    resetearFormularioServicio();
+    ocultarFormularios();
+    vistaListarServicio.classList.remove("d-none");
+    procesarListadoServicios();
+  }
+}
+
+function resetearFormularioServicio() {
+  frmAltaServicio.reset();
+  document.querySelector("#id_servicio_alta_servicio").value = "";
+  frmAltaServicio.querySelector("h2 span").textContent = "Alta de servicio";
+  document.querySelector("#btnGuardarServicioAltaServicio").innerHTML =
+    "<i class='bi bi-check-lg me-1'></i> Guardar";
+  document
+    .querySelector("#contenedorImagenActualAltaServicio")
+    .classList.add("d-none");
+}
+
+// Escapa texto antes de meterlo en innerHTML
+function esc(texto) {
+  const d = document.createElement("div");
+  d.textContent = texto ?? "";
+  return d.innerHTML;
+}
+function cancelar() {
+  resetearFormularioServicio();
+  mostrarInicio();
+}
