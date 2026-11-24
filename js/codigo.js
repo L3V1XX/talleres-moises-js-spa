@@ -11,6 +11,7 @@ var cochesMostrados = [];
 // >>> RESERVAS (Carmen): variables globales aquí
 
 // >>> SERVICIOS (Moises): variables globales aquí
+var idServicioPendienteBorrar = null;
 
 registrarEventos();
 mostrarInicio();
