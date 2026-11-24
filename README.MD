@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img/logo/logo.svg" alt="Logo de Talleres Moises" width="420">
+  <img src="img/logo/logo.webp" alt="Logo de Talleres Moises" width="420">
 </p>
 
 <h1 align="center">Talleres Moises · Aplicación PHP</h1>
