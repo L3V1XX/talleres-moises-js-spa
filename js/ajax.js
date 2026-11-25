@@ -2,7 +2,7 @@
 
 // =================== EJEMPLO DEL PROFESOR CON TIENDA COMPONENTES ===================
 
-const rutaBackend = "php/";
+const rutaBackend = new URL("php/", window.location.href).href;
 
 /**
  * Realiza peticiones AJAX de tipo GET
