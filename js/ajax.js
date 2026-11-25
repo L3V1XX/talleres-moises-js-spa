@@ -2,7 +2,7 @@
 
 // =================== EJEMPLO DEL PROFESOR CON TIENDA COMPONENTES ===================
 
-const rutaBackend = "http://localhost/talleres-moises-js-spa/php/";
+const rutaBackend = "/php/";
 
 /**
  * Realiza peticiones AJAX de tipo GET
