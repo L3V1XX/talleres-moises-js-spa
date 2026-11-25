@@ -1,10 +1,10 @@
 <?php
 // Parámetros de conexión
-define('DB_HOST', 'db');
-define('DB_USER', 'root');
-define('DB_PASS', 'test');
-define('DB_NAME', 'talleres_moises_js_spa');
-define('DB_PORT', '3306');
+define('DB_HOST', getenv('DB_HOST') ?: 'db');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');   // sin contraseña por defecto en el repo
+define('DB_NAME', getenv('DB_NAME') ?: 'talleres_moises_js_spa');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
 
 function obtenerConexion() {
     // Activar excepciones en errores mysqli
